@@ -1,0 +1,90 @@
+# One-step wiring example. Choose production batch/concurrency using measured preflight.
+[model]
+name = "lfm2"
+path = "${CLIMBING_GYM_MODEL}"
+
+[data]
+dataset_path = "../examples/data/futoshiki_smoke.jsonl"
+shuffle = false
+
+[env]
+name = "futoshiki"
+reward = "exact_match"
+
+[harness]
+name = "direct"
+
+[inference]
+backend = "lfm25_native"
+dtype = "bfloat16"
+max_model_len = 8192
+native_max_batch_size = 2
+max_num_seqs = 2
+compile_decode = false
+native_cuda_graphs = true
+native_bf16_weight_packing = true
+native_prefill_tokens = 4096
+apply_chat_template = true
+chat_template_enable_thinking = true
+assistant_prefill = "<thinking>\n"
+preflight_report_path = "../artifacts/value_mis_sc/speed.json"
+
+[inference.sampling]
+temperature = 1.0
+top_k = -1
+top_p = 1.0
+max_tokens = 4096
+n = 1
+logprobs = 1
+
+[inference.sampling.extra_params]
+behavior_topk = 32
+
+[rollout]
+batch_size = 2
+effective_batch_size = 2
+num_rollouts = 1
+use_dynamic_sampling = false
+max_inflight_requests = 2
+max_total_requests = 2
+
+[trainer]
+algorithm = "value_mis_sc"
+advantage_estimator = "length_adaptive_gae"
+loss_aggregation = "sample_mean"
+num_steps = 1
+train_device = "cuda"
+train_dtype = "bfloat16"
+policy_max_packed_tokens = 8192
+value_max_packed_tokens = 8192
+trajectory_minibatch_size = 2
+policy_epochs = 1
+value_epochs = 1
+compile_losses = false
+release_inference_buffers_before_update = true
+optimizer_workspace_bytes = 50331648
+value_optimizer_backing_path = "../runs/value_mis_sc/critic-optimizer-cache.bin"
+
+[policy_optimizer]
+type = "cpu_master_adamw"
+learning_rate = 0.000001
+
+[value_optimizer]
+type = "mapped_master_adamw"
+learning_rate = 0.000005
+
+[checkpoint]
+root_dir = "../runs/value_mis_sc/checkpoints"
+save_interval = 1
+save_final = true
+
+[train_logging]
+trajectory_path = "../runs/value_mis_sc/trajectories.jsonl"
+metrics_path = "../runs/value_mis_sc/training_metrics.jsonl"
+
+[wandb]
+enabled = true
+mode = "online"
+entity = "lukas928"
+project = "simple-pt"
+run_name = "value_mis_sc-smoke"

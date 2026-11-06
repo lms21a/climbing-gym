@@ -1,0 +1,41 @@
+# Projection exports contain exact prompt/completion token IDs and rendered prompts.
+[model]
+name = "lfm2"
+path = "${CLIMBING_GYM_MODEL}"
+
+[data]
+dataset_path = "../runs/projection/projected_train.jsonl"
+shuffle = false
+
+[sft]
+thinking_tag = "thinking"
+batch_size = 1
+num_epochs = 1
+max_seq_len = 8192
+max_packed_tokens = 8192
+train_device = "cuda"
+train_dtype = "bfloat16"
+apply_chat_template = false
+loss_on_full_sequence = false
+require_think_close = true
+
+[policy_optimizer]
+type = "adamw"
+learning_rate = 0.000001
+
+[checkpoint]
+root_dir = "../runs/sft/checkpoints"
+save_interval = 100
+save_final = true
+
+[wandb]
+enabled = true
+mode = "online"
+entity = "lukas928"
+project = "simple-pt"
+run_name = "projection-sft"
+
+# Optional periodic evaluation; prepare this config's native preflight first.
+# [eval]
+# config_file = "eval_knights_knaves.toml"
+# interval_steps = 100

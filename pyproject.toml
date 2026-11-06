@@ -1,0 +1,54 @@
+[project]
+name = "climbing-gym"
+version = "0.1.0"
+description = "Native LFM post-training, verified reasoning environments, and projection sampling"
+readme = "README.md"
+authors = [{name = "Lukas"}]
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+keywords = ["reinforcement-learning", "post-training", "lfm", "reasoning"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "torch>=2.10,<2.11",
+  "transformers>=4.57.1,<4.58",
+  "datasets>=4.4.2,<5",
+  "safetensors>=0.7,<0.8",
+  "huggingface-hub>=0.36.2,<0.37",
+  "numpy>=1.26,<3",
+  "wandb>=0.23.1,<0.24",
+]
+
+[project.optional-dependencies]
+cuda = [
+  "triton>=3.6,<3.7; sys_platform == 'linux'",
+  "flash-attn>=2.8.3,<2.9",
+  "setuptools>=80.10.2,<81",
+  "wheel>=0.46.3,<1",
+]
+
+[project.scripts]
+climbing-gym = "climbing_gym.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=9.0.2,<10"]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/climbing_gym"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/configs", "/examples", "/docs", "/README.md", "/LICENSE", "/AGENTS.md", "/pyproject.toml", "/uv.lock", "/.github"]
+exclude = ["**/__pycache__", "**/*.pyc"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
