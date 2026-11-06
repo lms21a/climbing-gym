@@ -1,6 +1,6 @@
 # Follow-up verification
 
-This review covers the standalone Futoshiki hill-climb example, readiness-gated Knights value training, optional CFOP integration, and removal of GitHub workflows. It used `/home/lukas928/SimplePT/.venv/bin/python` with `CUDA_VISIBLE_DEVICES=''`. No model inference, model evaluation, training run, GPU work, source-worktree mutation, commit, or publication was performed by this verifier. Tiny policies and explicit inference doubles are unit-test fixtures.
+The initial CPU-only review covered the standalone Futoshiki hill-climb example, readiness-gated Knights value training, optional CFOP integration, and removal of GitHub workflows. That phase used `/home/lukas928/SimplePT/.venv/bin/python` with `CUDA_VISIBLE_DEVICES=''` and launched no pretrained model inference/evaluation, training run, or GPU work. Tiny policies and explicit inference doubles were unit-test fixtures. The separately requested CUDA-enabled follow-up is recorded below; source SimplePT worktrees remained unchanged throughout.
 
 The [original GPU release verification](release_verification.md) remains evidence for the shared native engine and LFM checkpoint compatibility. It does not establish throughput, capacity, convergence, or historical accuracy reproduction for these new example workloads. Their launch commands require their own matched native preflight.
 
@@ -49,3 +49,21 @@ CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python 
 ```
 
 These are scoped review snapshots. Final whole-repository CPU and distribution checks are owned by the [packaging verification](followup_packaging.md); subsequent example-only tests may increase the final counts. Raw local review artifacts remain ignored and are not distributed. No new model accuracy or throughput measurement is claimed.
+
+## CUDA-enabled follow-up — November 6, 2026
+
+The complete repository suite was rerun with **`CUDA_VISIBLE_DEVICES=0`** against clean source commit `3868e4c7ab6522ff0b9f09f22e676e1ddd9a576f`. Before pytest, an explicit PyTorch assertion confirmed CUDA availability and exactly one selected GPU. The RTX 4090 had no compute processes and 0% utilization; this run owned the GPU exclusively.
+
+**Result: 803 passed, zero skips, zero failures/errors, 42.35 seconds, exit code 0.** All 130 CUDA cases that were skipped in the preceding CPU-only whole-repository run executed successfully. The 14 warnings are the existing PyTorch TorchScript deprecations from `tests/test_models.py`. No code fixes, relaxed correctness assertions, or additional skips were needed.
+
+Hardware/runtime: NVIDIA GeForce RTX 4090, 24,564 MiB, compute capability 8.9, driver 610.88; PyTorch `2.10.0+cu128`, CUDA `12.8`, Triton `3.6.0`, FlashAttention `2.8.3`, pytest `9.0.2`. The suite includes native CUDA/FP8 kernels, sampler probabilities, adaptive/session behavior, the 64-iteration graph recapture regression, and actual CUDA optimizer offload/resume checks, alongside the new example and CFOP contracts. These are existing unit/integration tests, not a pretrained model training or evaluation campaign, and do not establish new model quality or full-training capacity.
+
+Full evidence: [pytest log](../../artifacts/verification/cuda_followup/pytest.log), [JUnit XML](../../artifacts/verification/cuda_followup/results.xml), [hardware/environment](../../artifacts/verification/cuda_followup/hardware.json), and [machine-readable summary](../../artifacts/verification/cuda_followup/summary.json). The summary explicitly records empty skip, failure, and error lists. No compute process remained after completion.
+
+```bash
+mkdir -p artifacts/verification/cuda_followup
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=8 PYTHONPATH=src \
+  /home/lukas928/SimplePT/.venv/bin/python -m pytest -ra \
+  --junitxml=artifacts/verification/cuda_followup/results.xml \
+  > artifacts/verification/cuda_followup/pytest.log 2>&1
+```
