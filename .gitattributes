@@ -1,0 +1,2 @@
+# Captured model output is preserved verbatim, including trailing spaces.
+examples/futoshiki_hill_climb/recorded_projection_samples.md -whitespace

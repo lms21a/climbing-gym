@@ -150,6 +150,11 @@ def summarize_trajectories(
     }
     for info_key in (
         "exact_match",
+        "strict_success",
+        "strict_cfop_trace",
+        "phase_fidelity_valid",
+        "format_valid",
+        "notation_valid",
         "valid_code",
         "position_accuracy",
         "symbol_overlap",

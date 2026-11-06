@@ -31,7 +31,7 @@ uv sync --extra cuda --no-build-isolation-package flash-attn
 ```
 
 FlashAttention may compile locally; its build requires the matching CUDA toolkit
-and a C++ compiler. CPU CI excludes this optional extra. See the
+and a C++ compiler. See the
 [run guide](docs/running.md) for configuration, memory, resume, and logging.
 
 Point to an existing local checkpoint, authenticate W&B for training, then
@@ -57,7 +57,7 @@ benchmark is recorded as an initial baseline. Supply a relevant prior report on
 later runs and investigate unexplained slowdowns. [Preflight details](docs/running.md#native-preflight)
 cover exact flags, concurrency, sparse log probabilities, and training startup.
 
-## Workflows
+## Commands
 
 | Command | Purpose |
 | --- | --- |
@@ -68,13 +68,18 @@ cover exact flags, concurrency, sparse log probabilities, and training startup.
 | `climbing-gym preflight --help` | Actual tokenized workload preparation without loading weights |
 | `climbing-gym benchmark --help` | Fixed-budget native throughput and peak GPU memory |
 
-`python -m climbing_gym` exposes the same commands. Workflow modules also remain
+`python -m climbing_gym` exposes the same commands. Command modules also remain
 executable directly. Top-level package import, help, and version do not import
 Torch or initialize CUDA or W&B.
 
-The four environment families are **GSM8K, Countdown, Knights and Knaves, and
-Futoshiki**. Examples cover all four and every supported training method. The
-GSM8K format examples are handwritten arithmetic, not redistributed GSM8K data.
+The environments are **GSM8K, Countdown, Knights and Knaves, Futoshiki, and
+CFOP Rubik's Cube solving**. CFOP uses the optional Python bindings from
+[CFOP Solver](https://github.com/lms21a/cfopsolver); its
+[setup guide](docs/cfop.md) covers installation, the verified phase protocol,
+and native training/evaluation examples.
+The small GSM8K format examples are handwritten arithmetic; the full hill-climb
+recipe also includes the recorded GSM8K training subset with its
+[source and license notice](examples/futoshiki_hill_climb/data/SOURCES.md).
 
 | Method | Convention retained |
 | --- | --- |
@@ -84,7 +89,7 @@ GSM8K format examples are handwritten arithmetic, not redistributed GSM8K data.
 | MIS / MIS+SC | Token correction, fixed denominator, optional sparse score centering |
 | Grouped MIS / MIS+SC | Complete mixed binary-outcome groups and global fixed denominator |
 | MIS-PPO | Separate token/trajectory gates with optional learned critic |
-| Value MIS+SC | Frozen critic advantages, critic fit, then actor update |
+| Value MIS+SC | BPCO-style critic and length-adaptive advantages, frozen before critic/actor updates |
 
 These reductions are intentionally distinct. See [algorithm conventions](docs/algorithms.md)
 for estimator/configuration contracts and limitations. Projection's historical
@@ -92,12 +97,30 @@ for estimator/configuration contracts and limitations. Projection's historical
 Metropolis–Hastings. References must be algorithmic or independently verified
 outputs of the same model; stronger-model distillation is outside this project.
 
+## Reproduce the examples
+
+The [complete Futoshiki example](examples/futoshiki_hill_climb/README.md) follows
+the research journey from Instruct through arithmetic preparation, verified
+projection SFT, the 4×4 climb, same-lineage specialists, and a three-tier 5×5
+curriculum. It includes staged configurations, recorded-data replay, checkpoint
+lineage, and separately labeled historical measurements. Inspect the
+[recorded projection samples](examples/futoshiki_hill_climb/recorded_projection_samples.md)
+with full prompts, responses, expected answers, and outcomes. Recorded replay
+preserves the supervised data; newly generated trajectories remain stochastic.
+
+The [Knights Value MIS+SC example](examples/knights_value_mis_sc/README.md) follows
+the recent full-response method with a BPCO-style privileged critic and
+length-adaptive advantages. It includes production and smoke profiles,
+critic-readiness warmup, exact resume, and held-out evaluation. Supply your own
+starting checkpoint; the historical initialization and results are identified
+separately.
+
 ## Package map
 
 | Module | Responsibility |
 | --- | --- |
 | `climbing_gym.models`, `.inference` | LFM models, native generation/scoring, sessions and kernels |
-| `.envs`, `.rollout` | Four verifiers, task prompts, bounded collection and harnesses |
+| `.envs`, `.rollout` | Environment verifiers, task prompts, bounded collection and harnesses |
 | `.train`, `.ppo`, `.grpo`, `.cispo` | Unified entry point and retained training implementations |
 | `.flashreinforce`, `.offpolicy`, `.mis_ppo`, `.value_mis_sc` | Algorithm objectives and updates |
 | `.sft`, `.sampling` | Supervised training and verified native projection |
@@ -105,10 +128,13 @@ outputs of the same model; stronger-model distillation is outside this project.
 
 ## Scope and provenance
 
-This is an initial local release. CPU tests cover numerical contracts, checkpoint
-continuation, and integrated training routes. Native CUDA verification and actual
-model traces are documented in the [release verification report](docs/porting/release_verification.md).
-Long training, convergence, and full-model capacity across all methods are not
+This is an early release. CPU tests cover numerical contracts, checkpoint
+continuation, and integrated training routes. The
+[original GPU verification](docs/porting/release_verification.md) records native
+checkpoint compatibility and actual model traces; the
+[follow-up review](docs/porting/followup_verification.md) covers the new examples,
+critic readiness, and CFOP integration on CPU. Long training, convergence, and
+full-model capacity across all methods are not
 established by smoke tests. LFM3 is an additional inference-only implementation;
 it has no release accuracy/performance guarantee.
 

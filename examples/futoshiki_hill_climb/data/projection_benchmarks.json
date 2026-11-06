@@ -1,0 +1,42 @@
+{
+  "solver_projection_256": {
+    "projection": {
+      "tokens_per_second": 6049.164848489917,
+      "peak_allocated_bytes": 15638828032.0,
+      "batch_size": 128,
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_file": "preflight_review.json",
+      "gpu": "NVIDIA RTX4090 24GB",
+      "note": "Historical actual native setup; lengths and context differ across purposes."
+    },
+    "training": {
+      "tokens_per_second": 14295.509507526744,
+      "peak_allocated_bytes": 15640391680.0,
+      "batch_size": 128,
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_file": "preflight_review.json",
+      "gpu": "NVIDIA RTX4090 24GB",
+      "note": "Historical actual native setup; lengths and context differ across purposes."
+    }
+  },
+  "projection_reset": {
+    "projection": {
+      "tokens_per_second": 4097.450067485509,
+      "peak_allocated_bytes": 17734775296.0,
+      "batch_size": 64,
+      "source_run": "training",
+      "source_file": "projection_selected.json",
+      "gpu": "NVIDIA RTX4090 24GB",
+      "note": "Historical actual native setup; lengths and context differ across purposes."
+    },
+    "training": {
+      "tokens_per_second": 10129.539288772348,
+      "peak_allocated_bytes": 17272791040.0,
+      "batch_size": 128,
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_file": "review.json",
+      "gpu": "NVIDIA RTX4090 24GB",
+      "note": "Historical actual native setup; lengths and context differ across purposes."
+    }
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "kind": "Archived measurements; not results of running this example",
+  "no_new_inference_or_training": true,
+  "cautions": [
+    "Keep each panel, precision, attempt budget and token budget attached to its score.",
+    "Cumulative update 280 is validation-selected; 300 is the completed curriculum budget.",
+    "No original-Instruct Futoshiki baseline was verified.",
+    "The 5x5 curriculum has no final 4x4 retention measurement."
+  ],
+  "baseline_and_foothold": {
+    "source": "rl1000:full-panel",
+    "token_cap": 4096,
+    "panels": {
+      "4x4": {
+        "puzzles": 128,
+        "attempts_per_puzzle": 8,
+        "post_countdown": {
+          "correct": 1,
+          "samples": 1024,
+          "pass_at_1": 0.0009765625,
+          "pass_at_8": 0.0078125
+        },
+        "projected256_epoch1": {
+          "correct": 43,
+          "samples": 1024,
+          "pass_at_1": 0.0419921875,
+          "pass_at_8": 0.21875
+        }
+      },
+      "5x5_post_countdown": {
+        "puzzles": 32,
+        "attempts_per_puzzle": 8,
+        "pass_at_1": 0.0,
+        "pass_at_8": 0.0
+      }
+    }
+  },
+  "rl4_final_matched_8k": {
+    "source": "rl1000:full-panel",
+    "token_cap": 8192,
+    "rl750": {
+      "4x4": {
+        "puzzles": 128,
+        "attempts_per_puzzle": 8,
+        "pass_at_1": 0.5712890625,
+        "pass_at_8": 0.8984375
+      },
+      "5x5": {
+        "puzzles": 32,
+        "attempts_per_puzzle": 8,
+        "pass_at_1": 0.01953125,
+        "pass_at_8": 0.0625
+      }
+    },
+    "rl1000": {
+      "futoshiki4": {
+        "puzzles": 128,
+        "samples": 1024,
+        "samples_per_puzzle": 8,
+        "correct": 793,
+        "pass_at_1": 0.7744140625,
+        "pass_at_k": 0.9296875,
+        "solved_at_k": 119,
+        "mean_generated_tokens": 2232.7529296875,
+        "cap_hits": 133
+      },
+      "futoshiki5": {
+        "puzzles": 32,
+        "samples": 256,
+        "samples_per_puzzle": 8,
+        "correct": 13,
+        "pass_at_1": 0.05078125,
+        "pass_at_k": 0.15625,
+        "solved_at_k": 5,
+        "mean_generated_tokens": 6875.88671875,
+        "cap_hits": 178
+      }
+    }
+  },
+  "rl4_monitor_4k": {
+    "source": "blog:research-notes",
+    "puzzles": 32,
+    "attempts_per_puzzle": 8,
+    "token_cap": 4096,
+    "initial": {
+      "correct": 9,
+      "samples": 256,
+      "pass_at_1": 0.03515625
+    },
+    "update750": {
+      "correct": 134,
+      "samples": 256,
+      "pass_at_1": 0.5234375
+    },
+    "not_the_matched_8k_test": true
+  },
+  "projected_restart_bf16_development": {
+    "source": "projection_reset:result.json",
+    "token_cap": 8192,
+    "attempts_per_puzzle": 4,
+    "puzzles_per_tier": 256,
+    "precision": "native BF16",
+    "retained_epoch": 2,
+    "optimizer_updates": 128,
+    "teacher": {
+      "5x5_g11_i5": {
+        "puzzles": 256,
+        "samples": 1024,
+        "correct": 504.0,
+        "pass_at_1": 0.4921875,
+        "pass_at_k": 0.76953125,
+        "cap_hit_rate": 0.31640625,
+        "mean_tokens": 3463.564453125
+      },
+      "5x5_g9_i5": {
+        "puzzles": 256,
+        "samples": 1024,
+        "correct": 192.0,
+        "pass_at_1": 0.1875,
+        "pass_at_k": 0.41796875,
+        "cap_hit_rate": 0.03125,
+        "mean_tokens": 4218.64453125
+      }
+    },
+    "student": {
+      "5x5_g11_i5": {
+        "puzzles": 256,
+        "samples": 1024,
+        "correct": 369.0,
+        "pass_at_1": 0.3603515625,
+        "pass_at_k": 0.671875,
+        "cap_hit_rate": 0.419921875,
+        "mean_tokens": 4511.4619140625
+      },
+      "5x5_g9_i5": {
+        "puzzles": 256,
+        "samples": 1024,
+        "correct": 116.0,
+        "pass_at_1": 0.11328125,
+        "pass_at_k": 0.30859375,
+        "cap_hit_rate": 0.6591796875,
+        "mean_tokens": 6325.76953125
+      }
+    },
+    "target_within_2pp_each_tier_met": false,
+    "final_test_evaluated": false
+  },
+  "curriculum_fp8_validation": {
+    "precision": "native FP8",
+    "token_cap": 8192,
+    "attempts_per_puzzle": 4,
+    "puzzles_per_tier": 256,
+    "columns": [
+      {
+        "label": "Projected student / native FP8",
+        "local_update": 0,
+        "cumulative_curriculum_update": 0,
+        "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+        "panels": {
+          "expert": {
+            "source": "g9:eval0:expert",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 364,
+            "pass_at_1": 0.35546875,
+            "pass_at_4": 0.67578125,
+            "mean_tokens": 4503.484375,
+            "cap_hit_rate": 0.4111328125
+          },
+          "next": {
+            "source": "g9:eval0:next",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 126,
+            "pass_at_1": 0.123046875,
+            "pass_at_4": 0.33984375,
+            "mean_tokens": 6325.3681640625,
+            "cap_hit_rate": 0.6591796875
+          },
+          "pooled": {
+            "source": "g9:eval0:pooled",
+            "problems": 512,
+            "samples": 2048,
+            "samples_per_problem": 4,
+            "correct_completions": 490,
+            "pass_at_1": 0.2392578125,
+            "pass_at_4": 0.5078125,
+            "mean_tokens": 5414.42626953125,
+            "cap_hit_rate": 0.53515625
+          }
+        }
+      },
+      {
+        "label": "After 9/5",
+        "local_update": 100,
+        "cumulative_curriculum_update": 100,
+        "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+        "panels": {
+          "expert": {
+            "source": "g9:eval100:expert",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 599,
+            "pass_at_1": 0.5849609375,
+            "pass_at_4": 0.87890625,
+            "mean_tokens": 2721.232421875,
+            "cap_hit_rate": 0.0869140625
+          },
+          "next": {
+            "source": "g9:eval100:next",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 301,
+            "pass_at_1": 0.2939453125,
+            "pass_at_4": 0.59765625,
+            "mean_tokens": 4237.3037109375,
+            "cap_hit_rate": 0.1396484375
+          },
+          "pooled": {
+            "source": "g9:eval100:pooled",
+            "problems": 512,
+            "samples": 2048,
+            "samples_per_problem": 4,
+            "correct_completions": 900,
+            "pass_at_1": 0.439453125,
+            "pass_at_4": 0.73828125,
+            "mean_tokens": 3479.26806640625,
+            "cap_hit_rate": 0.11328125
+          }
+        }
+      },
+      {
+        "label": "After 8/7; full baseline entering 6/8",
+        "local_update": 0,
+        "cumulative_curriculum_update": 200,
+        "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+        "panels": {
+          "expert": {
+            "source": "g6:eval0:expert",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 722,
+            "pass_at_1": 0.705078125,
+            "pass_at_4": 0.91796875,
+            "mean_tokens": 2352.796875,
+            "cap_hit_rate": 0.1416015625
+          },
+          "next": {
+            "source": "g6:eval0:next",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 429,
+            "pass_at_1": 0.4189453125,
+            "pass_at_4": 0.75,
+            "mean_tokens": 4291.3837890625,
+            "cap_hit_rate": 0.3388671875
+          },
+          "harder": {
+            "source": "g6:eval0:harder",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 304,
+            "pass_at_1": 0.296875,
+            "pass_at_4": 0.5859375,
+            "mean_tokens": 5212.111328125,
+            "cap_hit_rate": 0.455078125
+          },
+          "hardest": {
+            "source": "g6:eval0:hardest",
+            "problems": 256,
+            "samples": 1024,
+            "samples_per_puzzle": 4,
+            "correct_completions": 95,
+            "pass_at_1": 0.0927734375,
+            "pass_at_4": 0.265625,
+            "mean_tokens": 6750.52734375,
+            "cap_hit_rate": 0.666015625
+          },
+          "pooled": {
+            "source": "g6:eval0:pooled",
+            "problems": 1024,
+            "samples": 4096,
+            "samples_per_problem": 4,
+            "correct_completions": 1550,
+            "pass_at_1": 0.37841796875,
+            "pass_at_4": 0.6298828125,
+            "mean_tokens": 4651.704833984375,
+            "cap_hit_rate": 0.400390625
+          }
+        }
+      },
+      {
+        "label": "Selected validation peak",
+        "local_update": 80,
+        "cumulative_curriculum_update": 280,
+        "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+        "panels": {
+          "expert": {
+            "source": "g6:eval80:expert",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 717,
+            "pass_at_1": 0.7001953125,
+            "pass_at_4": 0.91015625,
+            "mean_tokens": 2338.98828125,
+            "cap_hit_rate": 0.1552734375
+          },
+          "next": {
+            "source": "g6:eval80:next",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 411,
+            "pass_at_1": 0.4013671875,
+            "pass_at_4": 0.69921875,
+            "mean_tokens": 4086.583984375,
+            "cap_hit_rate": 0.37109375
+          },
+          "harder": {
+            "source": "g6:eval80:harder",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 329,
+            "pass_at_1": 0.3212890625,
+            "pass_at_4": 0.6484375,
+            "mean_tokens": 5087.3642578125,
+            "cap_hit_rate": 0.49609375
+          },
+          "hardest": {
+            "source": "g6:eval80:hardest",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 120,
+            "pass_at_1": 0.1171875,
+            "pass_at_4": 0.32421875,
+            "mean_tokens": 6563.9736328125,
+            "cap_hit_rate": 0.7177734375
+          },
+          "pooled": {
+            "source": "g6:eval80:pooled",
+            "problems": 1024,
+            "samples": 4096,
+            "samples_per_problem": 4,
+            "correct_completions": 1577,
+            "pass_at_1": 0.385009765625,
+            "pass_at_4": 0.6455078125,
+            "mean_tokens": 4519.2275390625,
+            "cap_hit_rate": 0.43505859375
+          }
+        }
+      },
+      {
+        "label": "Final checkpoint",
+        "local_update": 100,
+        "cumulative_curriculum_update": 300,
+        "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+        "panels": {
+          "expert": {
+            "source": "g6:eval100:expert",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 692,
+            "pass_at_1": 0.67578125,
+            "pass_at_4": 0.9296875,
+            "mean_tokens": 2484.8515625,
+            "cap_hit_rate": 0.181640625
+          },
+          "next": {
+            "source": "g6:eval100:next",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 383,
+            "pass_at_1": 0.3740234375,
+            "pass_at_4": 0.6171875,
+            "mean_tokens": 4343.51171875,
+            "cap_hit_rate": 0.4072265625
+          },
+          "harder": {
+            "source": "g6:eval100:harder",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 320,
+            "pass_at_1": 0.3125,
+            "pass_at_4": 0.62109375,
+            "mean_tokens": 5068.7802734375,
+            "cap_hit_rate": 0.4931640625
+          },
+          "hardest": {
+            "source": "g6:eval100:hardest",
+            "problems": 256,
+            "samples": 1024,
+            "correct_completions": 124,
+            "pass_at_1": 0.12109375,
+            "pass_at_4": 0.2890625,
+            "mean_tokens": 6637.7431640625,
+            "cap_hit_rate": 0.724609375
+          },
+          "pooled": {
+            "source": "g6:eval100:pooled",
+            "problems": 1024,
+            "samples": 4096,
+            "samples_per_problem": 4,
+            "correct_completions": 1519,
+            "pass_at_1": 0.370849609375,
+            "pass_at_4": 0.6142578125,
+            "mean_tokens": 4633.7216796875,
+            "cap_hit_rate": 0.45166015625
+          }
+        }
+      }
+    ]
+  },
+  "curriculum_mixed_test": {
+    "puzzles": 128,
+    "attempts_per_puzzle": 8,
+    "token_cap": 8192,
+    "measurements": [
+      {
+        "local_update": 100,
+        "source": "g6:test100",
+        "problems": 128,
+        "samples": 1024,
+        "correct_completions": 377,
+        "pass_at_1": 0.3681640625,
+        "pass_at_4": 0.5795758928571428,
+        "pass_at_8": 0.671875,
+        "mean_tokens": 4712.1240234375,
+        "cap_hit_rate": 0.4580078125
+      }
+    ]
+  },
+  "optional_regression_arm": {
+    "source": "blog:research-notes",
+    "direct_ancestor_of_projected_student": false,
+    "test": {
+      "puzzles": 128,
+      "attempts_per_puzzle": 8,
+      "token_cap": 8192,
+      "update100": {
+        "correct": 132,
+        "samples": 1024,
+        "pass_at_1": 0.12890625
+      },
+      "update350": {
+        "correct": 85,
+        "samples": 1024,
+        "pass_at_1": 0.0830078125
+      }
+    },
+    "not_a_claim_about_all_32_puzzle_monitor_points": true
+  },
+  "checkpoint_selection": {
+    "selected_peak_cumulative_update": 280,
+    "selected_peak_local_update": 80,
+    "final_cumulative_update": 300,
+    "peak_weights_available": false,
+    "final_weights_historically_retained": true,
+    "archived_peak_trace_source": "curriculum:trace-report"
+  }
+}

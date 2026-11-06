@@ -46,7 +46,7 @@ build-backend = "hatchling.build"
 packages = ["src/climbing_gym"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/configs", "/examples", "/docs", "/README.md", "/LICENSE", "/AGENTS.md", "/pyproject.toml", "/uv.lock", "/.github"]
+include = ["/src", "/tests", "/configs", "/examples", "/docs", "/README.md", "/LICENSE", "/AGENTS.md", "/pyproject.toml", "/uv.lock"]
 exclude = ["**/__pycache__", "**/*.pyc"]
 
 [tool.pytest.ini_options]

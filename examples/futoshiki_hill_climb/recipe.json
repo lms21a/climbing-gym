@@ -1,0 +1,949 @@
+{
+  "schema_version": 1,
+  "model": "LiquidAI/LFM2.5-1.2B-Instruct",
+  "stage_numbering": "RL checkpoint step_N is zero based within stage; metadata records exact cumulative optimizer state separately.",
+  "data_mode": "Bundled byte-verified historical puzzle banks. Generated banks are an explicit method replication.",
+  "primary_stages": [
+    "gsm8k_16",
+    "countdown3_13",
+    "countdown4_50",
+    "countdown4_continue50",
+    "solver_projection_256",
+    "futoshiki4_rl750",
+    "futoshiki4_rl1000",
+    "mixed5_warmup75",
+    "mixed5_to250",
+    "specialist_easy250",
+    "specialist_easy90",
+    "specialist_tier2",
+    "projection_reset",
+    "tier2_rl100",
+    "tier3_rl100",
+    "tier4_rl100"
+  ],
+  "stages": {
+    "gsm8k_16": {
+      "kind": "rl",
+      "steps": 16,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 4096,
+      "context": 8192,
+      "pack_tokens": 8192,
+      "learning_rate": 1e-06,
+      "seed": 20261002,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 1,
+      "eval_interval": 10,
+      "optimizer_transfer": false,
+      "environment": "gsm8k",
+      "reward": "historical_joint",
+      "input_policy": "base",
+      "data_asset": "gsm8k",
+      "retained_updates": 10,
+      "evaluation": {
+        "validation": {
+          "max_tokens": 4096,
+          "context": 8192,
+          "repeats": 1,
+          "max_examples": 256
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "countdown3_13": {
+      "kind": "rl",
+      "steps": 13,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 4096,
+      "context": 8192,
+      "pack_tokens": 8192,
+      "learning_rate": 1e-06,
+      "seed": 20261002,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 1,
+      "eval_interval": 10,
+      "optimizer_transfer": true,
+      "environment": "countdown",
+      "reward": "historical_joint",
+      "input_policy": "gsm8k_16@10",
+      "data_asset": "countdown3",
+      "evaluation": {
+        "validation": {
+          "max_tokens": 4096,
+          "context": 8192,
+          "repeats": 1,
+          "max_examples": 128
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "countdown4_50": {
+      "kind": "rl",
+      "steps": 50,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 4096,
+      "context": 8192,
+      "pack_tokens": 8192,
+      "learning_rate": 1e-06,
+      "seed": 20261002,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 1,
+      "eval_interval": 10,
+      "optimizer_transfer": true,
+      "environment": "countdown",
+      "reward": "historical_joint",
+      "input_policy": "countdown3_13",
+      "data_asset": "countdown4",
+      "evaluation": {
+        "validation": {
+          "max_tokens": 4096,
+          "context": 8192,
+          "repeats": 1,
+          "max_examples": 128
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "countdown4_continue50": {
+      "kind": "rl",
+      "steps": 50,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 4096,
+      "context": 8192,
+      "pack_tokens": 8192,
+      "learning_rate": 1e-06,
+      "seed": 20261008,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 1,
+      "eval_interval": 10,
+      "optimizer_transfer": true,
+      "environment": "countdown",
+      "reward": "historical_joint",
+      "input_policy": "countdown4_50",
+      "data_asset": "countdown4_repeat",
+      "evaluation": {
+        "validation": {
+          "max_tokens": 4096,
+          "context": 8192,
+          "repeats": 1,
+          "max_examples": 128
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "solver_projection_256": {
+      "kind": "sft",
+      "input_policy": "countdown4_continue50",
+      "retained_epoch": 1,
+      "epochs": 2,
+      "examples": 256,
+      "seed": 20261010
+    },
+    "futoshiki4_rl750": {
+      "kind": "rl",
+      "steps": 750,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 4096,
+      "context": 8192,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261010,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 20,
+      "eval_interval": 20,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "solver_projection_256",
+      "data_asset": "futoshiki4",
+      "train_slice": [
+        0,
+        96000
+      ],
+      "evaluation": {
+        "monitor": {
+          "max_tokens": 4096,
+          "context": 8192,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "futoshiki4_rl1000": {
+      "kind": "rl",
+      "steps": 250,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261010,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 20,
+      "eval_interval": 20,
+      "optimizer_transfer": true,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "futoshiki4_rl750",
+      "data_asset": "futoshiki4",
+      "train_slice": [
+        96000,
+        128000
+      ],
+      "evaluation": {
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "mixed5_warmup75": {
+      "kind": "rl",
+      "steps": 75,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 10240,
+      "pack_tokens": 10240,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 20,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "futoshiki4_rl1000",
+      "data_asset": "mixed5",
+      "train_slice": [
+        0,
+        9600
+      ],
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "mixed5_to250": {
+      "kind": "rl",
+      "steps": 175,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 10240,
+      "pack_tokens": 10240,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 20,
+      "optimizer_transfer": true,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "mixed5_warmup75",
+      "data_asset": "mixed5",
+      "train_slice": [
+        9600,
+        32000
+      ],
+      "optional": true,
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "mixed5_to350": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 10240,
+      "pack_tokens": 10240,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 20,
+      "optimizer_transfer": true,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "mixed5_to250",
+      "data_asset": "mixed5",
+      "train_slice": [
+        32000,
+        44800
+      ],
+      "optional": true,
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 10240,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "specialist_easy250": {
+      "kind": "rl",
+      "steps": 250,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261013,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 10,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "mixed5_to250",
+      "data_asset": "specialist_easy",
+      "train_slice": [
+        0,
+        32000
+      ],
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "specialist_easy90": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261013,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 10,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "mixed5_warmup75",
+      "data_asset": "specialist_easy",
+      "retained_updates": 90,
+      "train_slice": [
+        0,
+        12800
+      ],
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "specialist_tier2": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261014,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 10,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "specialist_easy90@90",
+      "data_asset": "specialist_tier2",
+      "retained_updates": 70,
+      "train_slice": [
+        0,
+        12800
+      ],
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "specialist_tier2_independent": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 128,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261014,
+      "fp8": false,
+      "objective": "sequence_kl",
+      "head_chunk": 512,
+      "checkpoint_interval": 5,
+      "eval_interval": 10,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "mixed5_warmup75",
+      "data_asset": "specialist_tier2",
+      "train_slice": [
+        0,
+        12800
+      ],
+      "optional": true,
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 128
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "projection_reset": {
+      "kind": "sft",
+      "input_policy": "futoshiki4_rl1000",
+      "experts": {
+        "5x5_g11_i5": "specialist_easy250",
+        "5x5_g9_i5": "specialist_tier2@70"
+      },
+      "retained_epoch": 2,
+      "epochs": 2,
+      "examples": 2048,
+      "seed": 2026101503
+    },
+    "tier2_rl100": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 256,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": true,
+      "objective": "mis_sc",
+      "head_chunk": 1024,
+      "checkpoint_interval": 20,
+      "eval_interval": 20,
+      "optimizer_transfer": false,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "projection_reset",
+      "data_asset": "tier2",
+      "normalization": "legacy_response_mean",
+      "model_config": {
+        "checkpoint_layers": false,
+        "recompute_mlp": false
+      },
+      "evaluation_seed_offsets": {
+        "expert": 200000,
+        "next": 200000,
+        "harder": 200000,
+        "hardest": 200000,
+        "monitor": 0,
+        "test": 100000
+      },
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12
+    },
+    "tier3_rl100": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 256,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": true,
+      "objective": "mis_sc",
+      "head_chunk": 1024,
+      "checkpoint_interval": 20,
+      "eval_interval": 20,
+      "optimizer_transfer": true,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "tier2_rl100",
+      "data_asset": "tier3",
+      "normalization": "legacy_response_mean",
+      "model_config": {
+        "checkpoint_layers": false,
+        "recompute_mlp": false
+      },
+      "evaluation_seed_offsets": {
+        "expert": 200000,
+        "next": 200000,
+        "harder": 200000,
+        "hardest": 200000,
+        "monitor": 0,
+        "test": 100000
+      },
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12,
+      "sampling_offset": 12800
+    },
+    "tier4_rl100": {
+      "kind": "rl",
+      "steps": 100,
+      "batch_size": 128,
+      "cohort_size": 256,
+      "max_tokens": 8192,
+      "context": 9216,
+      "pack_tokens": 9216,
+      "learning_rate": 1e-06,
+      "seed": 20261012,
+      "fp8": true,
+      "objective": "mis_sc",
+      "head_chunk": 1024,
+      "checkpoint_interval": 20,
+      "eval_interval": 20,
+      "optimizer_transfer": true,
+      "environment": "futoshiki",
+      "reward": "exact_match_strict",
+      "input_policy": "tier3_rl100",
+      "data_asset": "tier4",
+      "normalization": "legacy_response_mean",
+      "model_config": {
+        "checkpoint_layers": false,
+        "recompute_mlp": false
+      },
+      "evaluation_seed_offsets": {
+        "expert": 200000,
+        "next": 200000,
+        "harder": 200000,
+        "hardest": 200000,
+        "monitor": 0,
+        "test": 100000
+      },
+      "evaluation": {
+        "expert": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "next": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "harder": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "hardest": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 4,
+          "max_examples": 256
+        },
+        "monitor": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 32
+        },
+        "test": {
+          "max_tokens": 8192,
+          "context": 9216,
+          "repeats": 8,
+          "max_examples": 128,
+          "final_only": true
+        }
+      },
+      "keep_optimizer_checkpoints": 2,
+      "keep_raw_cohorts": 12,
+      "sampling_offset": 25600
+    }
+  }
+}

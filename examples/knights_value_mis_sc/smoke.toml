@@ -1,0 +1,155 @@
+[model]
+name = "lfm2"
+path = "@MODEL@"
+
+[model.config]
+attn_backend = "flash"
+shortconv_backend = "triton_k3"
+fused_backbone_kernels = true
+checkpoint_layers = true
+recompute_mlp = false
+
+[data]
+dataset_path = "data/train.jsonl"
+seed = 2026110401
+shuffle = true
+
+[env]
+name = "knights_knaves"
+reward = "exact_match"
+
+[harness]
+name = "direct"
+
+[inference]
+backend = "lfm25_native"
+dtype = "bfloat16"
+seed = 2026110401
+max_model_len = 8192
+native_max_batch_size = 2
+max_num_seqs = 2
+compile_decode = false
+native_cuda_graphs = true
+native_cuda_max_graphs = 1
+native_bf16_weight_packing = false
+native_prefill_tokens = 4096
+native_fp8_mlp = true
+native_fp8_kv = true
+native_fp8_lm_head = true
+native_adaptive_batching = true
+apply_chat_template = true
+chat_template_enable_thinking = false
+assistant_prefill = "<thinking>\n"
+preflight_report_path = "preflight/train.json"
+
+[inference.sampling]
+temperature = 1.0
+top_k = -1
+top_p = 1.0
+max_tokens = 256
+n = 1
+logprobs = 1
+stop = ["</answer>"]
+
+[inference.sampling.extra_params]
+behavior_topk = 32
+
+[rollout]
+batch_size = 2
+effective_batch_size = 2
+num_rollouts = 1
+use_dynamic_sampling = false
+max_inflight_requests = 2
+max_total_requests = 2
+
+[trainer]
+algorithm = "value_mis_sc"
+advantage_estimator = "length_adaptive_gae"
+loss_aggregation = "sample_mean"
+num_steps = 1
+seed = 2026110401
+train_device = "cuda"
+train_dtype = "bfloat16"
+policy_max_packed_tokens = 8192
+value_max_packed_tokens = 8192
+policy_epochs = 1
+value_epochs = 2
+policy_max_grad_norm = 1.0
+value_max_grad_norm = 10.0
+gamma = 1.0
+gae_lambda = 1.0
+privileged_critic = true
+value_mis_alpha = 0.4
+value_warmup_min_batches = 1
+value_warmup_max_batches = 3
+value_warmup_consecutive_ready = 1
+value_warmup_max_abs_bias = 0.08
+flashreinforce_objective = "mis_sc"
+flashreinforce_length_normalization = "fixed"
+flashreinforce_fixed_token_normalizer = 256
+flashreinforce_head_chunk_size = 512
+flashreinforce_fused_head = true
+flashreinforce_checkpoint_head = true
+offpolicy_ratio_min = 0.5
+offpolicy_ratio_max = 5.0
+compile_losses = false
+release_inference_buffers_before_update = true
+optimizer_workspace_bytes = 50331648
+optimizer_pin_state = false
+value_optimizer_backing_path = "cache/critic-adam.bin"
+
+[policy_optimizer]
+type = "cpu_master_adamw"
+learning_rate = 1e-06
+weight_decay = 0.0
+
+[value_optimizer]
+type = "mapped_master_adamw"
+learning_rate = 5e-06
+weight_decay = 0.0
+
+[checkpoint]
+root_dir = "checkpoints"
+save_interval = 10
+save_final = true
+
+[train_logging]
+trajectory_path = "logs/trajectories.jsonl"
+metrics_path = "logs/training_metrics.jsonl"
+
+[eval]
+interval = 1
+max_examples = 6
+pass_k = 1
+seed = 2026110411
+shuffle = false
+preflight_report_path = "preflight/dev.json"
+
+[eval.data]
+dataset_path = "data/dev.jsonl"
+shuffle = false
+
+[eval.env]
+name = "knights_knaves"
+reward = "exact_match"
+
+[eval.rollout]
+batch_size = 6
+effective_batch_size = 6
+num_rollouts = 1
+use_dynamic_sampling = false
+max_inflight_requests = 2
+max_total_requests = 6
+
+[eval.logging]
+summary_path = "eval/dev/summary.json"
+trajectory_path = "eval/dev/trajectories.jsonl"
+trace_path = "eval/dev/traces.md"
+max_traces = 12
+
+[wandb]
+enabled = true
+mode = "online"
+entity = "lukas928"
+project = "simple-pt"
+run_name = "knights-value-mis-sc-smoke"

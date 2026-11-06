@@ -1,0 +1,15 @@
+{
+  "actor_updates_completed": 300,
+  "kind": "historical archived measurements; no new run performed",
+  "readiness_metrics": {
+    "critic/pre_fit_calibration_bias": -0.006479532923549414,
+    "critic/pre_fit_constant_baseline_mse": 0.13858135044574738,
+    "critic/pre_fit_mc_ev": 0.011706942671303344,
+    "critic/pre_fit_mc_mse": 0.13700097799301147,
+    "warmup/batch": 22,
+    "warmup/consecutive_ready": 3
+  },
+  "source_run": "knights_value_mis_sc_xor3_fullresponse100_20261104",
+  "wandb_url": "https://wandb.ai/lukas928/simple-pt/runs/uomgo8hi",
+  "warmup_batches": 22
+}

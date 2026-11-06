@@ -1,0 +1,73 @@
+{
+  "audited_worktree_commit": "07b67622aeab814512a5c5c551d663de65863b21",
+  "cpu_prompt_tokenizer_parity": {
+    "dev": 384,
+    "model_inference": false,
+    "test": 384,
+    "total": 1280,
+    "train": 512
+  },
+  "data": {
+    "dev": {
+      "gzip_sha256": "56ad1a008982152451da41aad7635b249524ea5b1c397097d95841577c171bed",
+      "per_cell": {
+        "familiar_n2_d2": 64,
+        "familiar_n3_d2": 64,
+        "familiar_n4_d2": 64,
+        "xor_iff_n2_d2": 64,
+        "xor_iff_n3_d2": 64,
+        "xor_iff_n4_d2": 64
+      },
+      "portable_sha256": "333e90573a41715811d90ff45eb236bdb4f9dede7288bbed30f694a5c67bf7b9",
+      "rows": 384,
+      "source_sha256": "097cdf0a1dc3800ead4d4c71cecaaa230d7c9246b7a511a4246f9a4d8c4e2805"
+    },
+    "test": {
+      "gzip_sha256": "d0810646752c15fd8d48a26eac4ec9416819a513c2d6ba00f8a55de2e8247ec7",
+      "per_cell": {
+        "familiar_n2_d2": 64,
+        "familiar_n3_d2": 64,
+        "familiar_n4_d2": 64,
+        "xor_iff_n2_d2": 64,
+        "xor_iff_n3_d2": 64,
+        "xor_iff_n4_d2": 64
+      },
+      "portable_sha256": "ea7932cc00e98b8af733094e67aceb45ec009304670ef54002ed159e4cf869fa",
+      "rows": 384,
+      "source_sha256": "beb9cc6cda3753c5165d5249dee29182461b5ce52b33b90a45de7c21092e0726"
+    },
+    "train": {
+      "gzip_sha256": "c315e2d3314366000db4d46ed08408de1fa21972b2646149bf6af06675515c35",
+      "per_cell": {
+        "xor_iff_n3_d2": 512
+      },
+      "portable_sha256": "be77295cfee2fe373e4e89acc80b9fd232076ec64774d1889c94d6ee7e9c266a",
+      "rows": 512,
+      "source_sha256": "bfc537f8a438e41ccbdba0d27e7dcb459bad1211a5dbb864848087c42403470a"
+    }
+  },
+  "evaluation_cells": [
+    "familiar_n2_d2",
+    "xor_iff_n2_d2",
+    "familiar_n3_d2",
+    "xor_iff_n3_d2",
+    "familiar_n4_d2",
+    "xor_iff_n4_d2"
+  ],
+  "historical_actor_updates": 300,
+  "historical_wandb_url": "https://wandb.ai/lukas928/simple-pt/runs/uomgo8hi",
+  "historical_warmup_batches": 22,
+  "initial_checkpoint_lineage": "knights_paragraph_no_tools_xor3_rl100_20261104 step40",
+  "initial_checkpoint_sha256": "ba7cf60d188887e3af80e2a2dda2ac264ad6a6665f2800c83fdae805482039e9",
+  "later_extension_commit": "c333959ad8e0feb760479fb1df83c856bfa56616",
+  "prompt_audit": "Every portable public prompt is checked against render_prompt; each row preserves a SHA256 of the original prompt token IDs for CPU tokenizer parity before preflight.",
+  "public_algorithm": "value_mis_sc",
+  "removed_fields": [
+    "prompt_token_ids",
+    "prompt_text"
+  ],
+  "source_algorithm": "full_response_value_mis_sc",
+  "source_commit": "8772669a3e993abe0a95caba95f92349e1c4970d",
+  "source_run": "knights_value_mis_sc_xor3_fullresponse100_20261104",
+  "source_script_sha256": "1bec92f2638c94754265a745a503eac1fb4a8f2a6c5ce0e7d4849c12b2bb9fab"
+}

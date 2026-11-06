@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "source": {
+    "baseline_git_commit": "8055a8a5f871efa6c3f12ca42e8da641e55a17e7",
+    "original_checkout": "simple-pt-cfop-lfm25",
+    "original_paths": [
+      "src/simple_pt/envs/cfop_cube.py",
+      "src/simple_pt/envs/cfop_support.py",
+      "src/simple_pt/envs/cfop_reasoning.py"
+    ],
+    "files_were_untracked": true,
+    "recovery": "Archived source reads and successful source patches, July17 2026 development session, through 23:26UTC. Transcripts remain outside repository.",
+    "intermediate_cube_sha256": "5da05362e9b80bcbefe9fc660892bc1499d2f2bd7a8d3d846c72d16a65e81a1c",
+    "intermediate_sha256_matches_archived_read": true
+  },
+  "solver": {
+    "binding_schemas": {
+      "CUBE_FEATURE_SCHEMA": "cube-features/v1",
+      "DECISION_TRACE_SCHEMA": "cfop-decisions/v1",
+      "STATE_FORMAT": "facelets-urfdlb-v1",
+      "VERIFICATION_SCHEMA": "cfop-verification/v1"
+    },
+    "expected_binding_schemas": {
+      "CUBE_FEATURE_SCHEMA": "cube-features/v1",
+      "DECISION_TRACE_SCHEMA": "cfop-decisions/v1",
+      "STATE_FORMAT": "facelets-urfdlb-v1",
+      "VERIFICATION_SCHEMA": "cfop-verification/v1"
+    },
+    "expected_source_commit": "8d7d395c5993a83d6378949750682c47e23d818f",
+    "expected_version": "0.4.0",
+    "expected_wheel": "cfop_solver-0.4.0-cp38-abi3-linux_x86_64.whl",
+    "expected_wheel_sha256": "8624dce43fd790d776cb646f76607012235b607391395d6824586c64e514f9fc",
+    "installed_version": "0.4.0",
+    "source_clean": true,
+    "source_commit": "8d7d395c5993a83d6378949750682c47e23d818f",
+    "source_diff_sha256": "82e49f2a1cf78be5685c3fcde7f918f88905ca3ade23dfb6eefbc3245eeca5c9",
+    "source_status_entries": []
+  },
+  "protocols": {
+    "full": "strict-cfop-trace/v2",
+    "full_reward": "cfop_dense_v2",
+    "full_reward_range": [
+      0,
+      1.8
+    ],
+    "reasoning": "cfop-reasoning/v1",
+    "phase": "cfop-phase/v1",
+    "phase_reward": "cfop_phase_v1",
+    "phase_reward_range": [
+      0,
+      1
+    ]
+  },
+  "files": {
+    "cfop_cube.py": {
+      "recovered_source_sha256": "f9f86b12e367d80901d74b861767c764950fc0c91df07122f2c515e9fb2e0200",
+      "ported_sha256": "eb29718489abbfd1403ebb252c634d782335653f6c3ced4db7da155cb68768ce"
+    },
+    "cfop_support.py": {
+      "recovered_source_sha256": "778c0f57eecbbd53b9b4c9069afdb4f32b71cf392017f97b9316691435612601",
+      "ported_sha256": "778c0f57eecbbd53b9b4c9069afdb4f32b71cf392017f97b9316691435612601"
+    },
+    "cfop_reasoning.py": {
+      "recovered_source_sha256": "a799d29648071e46cde7cc7c5fba0cfff91eda64443b6575624efbf3c88f8219",
+      "ported_sha256": "67f5d05148b087481e0350107c3527a40b0ec2fa98fe185c743f6e04b177d5a0"
+    }
+  },
+  "examples": {
+    "source_manifest": "data/cfop_sft_scale_64/manifest.json",
+    "source_manifest_sha256": "69f635fcc92f65fde578a3cce7102e3530ed04ae80c70ee57e0fa086ae7e210c",
+    "selection": "First two full_train.jsonl records; retain state, state_format, completion, known_solution, cube_id, difficulty, environment_eligible, row_type only.",
+    "bundled": "examples/data/cfop_smoke.jsonl",
+    "sha256": "046716d3aefad8fefde6aae177f07d0891cde2b058c74c6351bf7716467ea65b",
+    "model_generated": false
+  },
+  "validation": {
+    "focused_cpu_tests": 51,
+    "actual_rust_solver_version": "0.4.0",
+    "model_inference_training_or_evaluation_performed": false,
+    "focused_plus_shared_regression_tests": 95,
+    "installed_extension_sha256": "8c5425af7fe6491630ee239dcffc139f762f4131d2f94d9cae397ae2afe72ee5",
+    "installed_extension_matches_pinned_historical_wheel": true
+  },
+  "behavior_changes": [
+    "Package import paths renamed.",
+    "Optional dependency error links standalone installation documentation.",
+    "Configuration and train/evaluation integration added.",
+    "One early parser test updated to latest recovered rule rejecting empty F2L move lists; production parser unchanged."
+  ]
+}

@@ -55,13 +55,26 @@ terminal outcomes. Its actor reduction can depend on packing when token retentio
 differs between packs; that original convention is preserved. `mis_use_value=false`
 selects the policy-only route and requires `advantage_estimator="grpo"`.
 
-Value MIS+SC freezes actor advantages before fitting either model, using critic
-pre-action positions, raw Monte Carlo targets, full-response token advantages,
+Value MIS+SC uses the BPCO-style bounded critic and length-adaptive advantages.
+It freezes actor advantages before fitting either model, using critic pre-action
+positions, raw Monte Carlo targets, full-response token advantages,
 and fixed configured token normalization. Reference-only critic context never
 contains the current response/outcome. The cloned critic trains feed-forward/norm
 parameters and a bounded FP32 value projection. Critic fit precedes actor update,
 with alternating model residency and an independent optimizer. Mapped critic state
-is disposable; checkpoints retain durable exact states.
+is disposable; checkpoints retain durable exact states. Optional readiness warmup
+fits only the critic on fresh rollouts until pre-fit explained variance, baseline
+MSE, and calibration checks pass for the configured consecutive batches. The actor
+optimizer stays unchanged during warmup; reaching the limit without readiness
+fails before actor training. Warmup progress and its exact continuation state are
+checkpointed. This readiness gate is separate from inference throughput checks.
+The [recent Knights example](../examples/knights_value_mis_sc/README.md) preserves
+the historical production profile and offers a separately labeled smoke profile.
+
+CFOP's full-cube dense reward can exceed one. Use a compatible scalar-reward
+method such as the provided FlashREINFORCE example; binary-only grouped MIS and
+Value MIS+SC reject it. See [the CFOP guide](cfop.md) for its optional solver and
+separate full-cube/stage-local protocols.
 
 Full numerical provenance, source revisions, and CPU verification are recorded
 in [the algorithm port note](porting/rl_algorithms.md) and

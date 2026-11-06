@@ -57,9 +57,11 @@ def test_all_training_examples_validate_without_weights(path, tmp_path, monkeypa
     assert config.inference.sampling.max_tokens == 4096
     assert config.inference.sampling.logprobs == 1
     assert resolve_limits(config.inference, config.rollout)["representative_batch_size"] >= 2
+    if config.env.name in {"cfop_cube", "cfop_phase"}:
+        pytest.importorskip("cfop_solver", reason="CFOP uses optional solver bindings")
     env = config.env.build()
     rows = config.data.load_rows()
-    assert len(rows) == 3
+    assert len(rows) == (2 if config.env.name == "cfop_cube" else 3)
     for i, row in enumerate(rows):
         assert env.build_example(row, dataset_index=i).prompt
 
@@ -72,8 +74,12 @@ def test_all_evaluation_examples_parse_without_weights(path, tmp_path, monkeypat
     # replacing only model construction and the prerequisite measured report.
     monkeypatch.setattr(evaluation, "_build_inference_engine", lambda *args: SimpleNamespace(close=lambda: None))
     monkeypatch.setattr(evaluation, "validate_preflight", lambda config: {"test_only": True})
+    payload = tomllib.loads(path.read_text())
+    is_cfop = payload["env"]["name"] in {"cfop_cube", "cfop_phase"}
+    if is_cfop:
+        pytest.importorskip("cfop_solver", reason="CFOP uses optional solver bindings")
     run = evaluation.load_run_from_toml(path)
-    assert run.total_examples == 3
+    assert run.total_examples == (2 if is_cfop else 3)
     assert run.logging_config.trace_path == str(ROOT / "evaluations" / path.stem.removeprefix("eval_") / "traces.md")
     assert not run.rollout_coordinator.config.resolved_runner().use_dynamic_sampling
 

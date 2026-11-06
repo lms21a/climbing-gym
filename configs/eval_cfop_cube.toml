@@ -1,0 +1,53 @@
+# Small schema example; these two rows are not a benchmark result.
+[model]
+path = "${CLIMBING_GYM_MODEL}"
+
+[data]
+dataset_path = "../examples/data/cfop_smoke.jsonl"
+shuffle = false
+
+[env]
+name = "cfop_cube"
+reward = "cfop_dense_v2"
+
+[harness]
+name = "direct"
+
+[inference]
+backend = "lfm25_native"
+dtype = "bfloat16"
+max_model_len = 8192
+native_max_batch_size = 2
+max_num_seqs = 2
+compile_decode = false
+native_cuda_graphs = true
+native_bf16_weight_packing = true
+native_prefill_tokens = 4096
+apply_chat_template = true
+chat_template_enable_thinking = false
+assistant_prefill = ""
+preflight_report_path = "../artifacts/eval_cfop_cube/speed.json"
+
+[inference.sampling]
+temperature = 1.0
+top_k = -1
+top_p = 1.0
+max_tokens = 4096
+n = 1
+logprobs = 1
+
+[rollout]
+num_rollouts = 1
+use_dynamic_sampling = false
+max_inflight_requests = 2
+
+[eval]
+max_examples = 2
+pass_k = 1
+shuffle = false
+
+[logging]
+summary_path = "../evaluations/cfop_cube/summary.json"
+trajectory_path = "../evaluations/cfop_cube/trajectories.jsonl"
+trace_path = "../evaluations/cfop_cube/traces.md"
+max_traces = 8

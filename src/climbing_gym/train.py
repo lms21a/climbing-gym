@@ -51,8 +51,12 @@ def validate_config(config: PPOConfig) -> None:
         raise ValueError("num_steps must be nonnegative and packing budget positive")
     if trainer.policy_epochs <= 0 or trainer.value_epochs <= 0:
         raise ValueError("Policy and critic epochs must be positive")
+    from .value_warmup import validate_config as validate_warmup
+    validate_warmup(config)
     from .training_memory import optimizer_chunk_elements
     optimizer_chunk_elements(trainer.optimizer_chunk_elements, trainer.optimizer_workspace_bytes)
+    if type(trainer.optimizer_pin_state) is not bool:
+        raise ValueError("optimizer_pin_state must be a boolean")
     if type(trainer.release_inference_buffers_before_update) is not bool:
         raise ValueError("release_inference_buffers_before_update must be a boolean")
     sampling = rollout.sampling or config.inference.sampling
@@ -60,8 +64,10 @@ def validate_config(config: PPOConfig) -> None:
         raise ValueError("Native training requires stored sampled-token log probabilities")
     if sampling.temperature != 1 or sampling.top_p != 1 or sampling.top_k != -1 or sampling.n != 1:
         raise ValueError("Native policy updates require temperature=1, full support, and n=1 for raw behavior probabilities")
-    if config.env.name not in {"gsm8k", "math_qa", "countdown", "knights_knaves", "futoshiki"}:
-        raise ValueError("Training supports GSM8K, Countdown, Knights and Knaves, and Futoshiki")
+    if config.env.name not in {"gsm8k", "math_qa", "countdown", "knights_knaves", "futoshiki", "cfop_cube", "cfop_phase"}:
+        raise ValueError("Training supports GSM8K, Countdown, Knights and Knaves, Futoshiki, and CFOP")
+    if algorithm == "value_mis_sc" and config.env.name in {"cfop_cube", "cfop_phase"}:
+        raise ValueError("Value MIS+SC requires binary outcomes; CFOP dense rewards are incompatible")
     if rollout.use_dynamic_sampling and config.harness.name == "direct" and rollout.num_rollouts >= 2:
         n, concurrency, cap = rollout.num_rollouts, rollout.max_inflight_requests, rollout.max_total_requests
         if not concurrency or concurrency % n or cap is None or cap % n or cap < rollout.effective_batch_size * n:
@@ -113,6 +119,10 @@ def validate_config(config: PPOConfig) -> None:
     # Validate the shared sampling/objective contract using its real validator.
     view = replace(config, trainer=replace(trainer, algorithm="flashreinforce"))
     if algorithm == "value_mis_sc":
+        if trainer.critic_warmup_steps:
+            raise ValueError("Value MIS+SC uses readiness-gated warmup; set critic_warmup_steps=0 and configure value_warmup_min_batches/max_batches")
+        if trainer.gamma != 1 or trainer.gae_lambda != 1:
+            raise ValueError("Value MIS+SC uses gamma=1 and Monte Carlo critic targets (gae_lambda=1)")
         if trainer.advantage_estimator != "length_adaptive_gae":
             raise ValueError("Value MIS+SC requires advantage_estimator='length_adaptive_gae'")
         view = replace(view, trainer=replace(view.trainer, advantage_estimator="batch_centered"))
@@ -120,7 +130,7 @@ def validate_config(config: PPOConfig) -> None:
     if grouped:
         if trainer.advantage_estimator != "grpo" or not rollout.use_dynamic_sampling or rollout.num_rollouts < 2:
             raise ValueError("Grouped MIS requires group-relative advantages, dynamic mixed-group sampling, and >=2 rollouts")
-        if config.env.reward not in {"exact_match", "exact_match_single_answer", "terminal_expression"}:
+        if config.env.reward not in {"exact_match", "exact_match_strict", "exact_match_single_answer", "terminal_expression"}:
             raise ValueError("Grouped MIS requires binary exact-match rewards")
         if config.rollout.sampling and config.rollout.sampling.max_tokens != config.inference.sampling.max_tokens:
             raise ValueError("Grouped MIS uses inference.sampling.max_tokens as its fixed denominator; budgets must match")
@@ -171,7 +181,10 @@ def load_run_from_toml(config_path: str | Path):
         if config.resume.checkpoint_dir:
             restore_training_state(config.resume.checkpoint_dir, policy_optimizer=run.policy_optimizer,
                                    value_optimizer=optimizer, allow_weights_only=config.resume.allow_weights_only)
-        return replace(run, value_model=critic, value_optimizer=optimizer, tokenizer=tokenizer)
+        from .value_warmup import load_state
+        state = load_state(config, actor_start_step=run.start_step)
+        return replace(run, value_model=critic, value_optimizer=optimizer, tokenizer=tokenizer,
+                       value_warmup_state=state)
     except BaseException:
         run.wandb_logger.close()
         run.engine.close()
@@ -189,9 +202,16 @@ def _reload_critic(run):
         reload_to_device(run.value_model, run.value_optimizer, device=trainer.train_device, dtype=trainer.train_dtype)
 
 
-def update_policy(run, trajectories):
+def update_policy(run, trajectories, *, actor_update=True):
     """Execute one complete learner update; public for CPU integration tests."""
     algorithm = run.config.trainer.algorithm
+    if not actor_update and algorithm != "value_mis_sc":
+        raise ValueError("Critic-only readiness updates require value_mis_sc")
+    if algorithm == "value_mis_sc" and actor_update:
+        from .value_warmup import enabled as warmup_enabled
+        state = getattr(run, "value_warmup_state", None)
+        if warmup_enabled(run.config.trainer) and (state is None or not state.ready or state.failed):
+            raise RuntimeError("Complete readiness-gated critic warmup before any value-MIS actor update")
     if algorithm == "mis_ppo":
         from .mis_ppo import update_policy as update
         return update(run, trajectories)
@@ -209,9 +229,11 @@ def update_policy(run, trajectories):
         critic_metrics = fit_critic(run, trajectories, packs, targets,
             epochs=run.config.trainer.value_epochs, max_grad_norm=run.config.trainer.value_max_grad_norm)
         offload_to_cpu(run.value_model, run.value_optimizer)
-        reload_to_device(run.policy_model, run.policy_optimizer, device=run.config.trainer.train_device,
-                         dtype=run.config.trainer.train_dtype)
-        metrics = {f"policy/{k}": v for k, v in update_actor(run, trajectories, advantages).items()}
+        metrics = {}
+        if actor_update:
+            reload_to_device(run.policy_model, run.policy_optimizer, device=run.config.trainer.train_device,
+                             dtype=run.config.trainer.train_dtype)
+            metrics = {f"policy/{k}": v for k, v in update_actor(run, trajectories, advantages).items()}
         metrics.update({f"value/{k}": v for k, v in critic_metrics.items()})
         metrics.update({f"value/frozen_{k}": v for k, v in diagnostics.items()})
         return metrics, []
@@ -229,16 +251,118 @@ def _append_json(path, payload):
             handle.write(json.dumps(payload, sort_keys=True) + "\n")
 
 
+def _save_warmup_checkpoint(run, state):
+    """Publish a complete critic collection boundary with actor step still -1."""
+    from .trainers.checkpoints import CheckpointManager
+    from .value_warmup import save_state
+
+    root = Path(run.config.checkpoint.root_dir)
+    destination = root / "critic_warmup" / f"step_{state.batches - 1}"
+    if (destination / "value_warmup_state.json").exists():
+        raise FileExistsError(f"Warmup boundary already exists: {destination}; resume the latest checkpoint or choose a new root")
+    manager = CheckpointManager(replace(run.config.checkpoint, root_dir=str(root / "critic_warmup")))
+    # Numbered warmup directories never collide with actor step checkpoints.
+    path = manager.save(step=state.batches - 1, policy_model=run.policy_model,
+        value_model=run.value_model, policy_optimizer=run.policy_optimizer,
+        value_optimizer=run.value_optimizer)
+    save_dataset_checkpoint(run.rollout_coordinator, path)
+    if not (path / "dataset_state.json").is_file():
+        raise RuntimeError("Cannot publish warmup checkpoint without exact dataset continuation state")
+    metadata = path / "metadata.json"
+    temporary = metadata.with_suffix(".tmp")
+    temporary.write_text(json.dumps({"step": -1, "value_warmup_batch": state.batches}) + "\n")
+    temporary.replace(metadata)
+    # The phase sidecar is written last; missing/incomplete checkpoints fail closed.
+    _save_tokenizer(run, path)
+    save_state(path, state, run.config)
+    pointer = root / "latest_value_warmup.json"
+    temporary = pointer.with_suffix(".tmp")
+    temporary.write_text(json.dumps({"checkpoint_path": str(path.resolve()),
+                                    "batches": state.batches, "ready": state.ready,
+                                    "failed": state.failed}, indent=2) + "\n")
+    temporary.replace(pointer)
+    published = json.loads(pointer.read_text())
+    required = ("policy", "value_model.pt", "training_state.pt", "dataset_state.json", "value_warmup_state.json")
+    if Path(published["checkpoint_path"]) != path.resolve() or not all((path / name).exists() for name in required):
+        raise RuntimeError("Published warmup checkpoint is incomplete; previous checkpoints retained")
+    # Full critic optimizer states are large. Retain two complete recovery
+    # boundaries, pruning only after the new pointer and every state file exist.
+    import shutil
+    complete = []
+    for candidate in (root / "critic_warmup").glob("step_*"):
+        marker = candidate / "value_warmup_state.json"
+        if candidate.is_dir() and marker.is_file():
+            batch = json.loads(marker.read_text())["state"]["batches"]
+            complete.append((batch, candidate))
+    for _, old in sorted(complete)[:-2]:
+        shutil.rmtree(old)
+    return path
+
+
+def _run_value_warmup(run, state, *, observe_step=None):
+    from .grpo import _append_training_trajectories
+
+    trainer = run.config.trainer
+    if state.failed:
+        raise RuntimeError("Critic readiness failed at the maximum warmup batches; actor training has not started")
+    while not state.ready:
+        started = time.perf_counter()
+        for model, optimizer in ((run.policy_model, run.policy_optimizer), (run.value_model, run.value_optimizer)):
+            offload_to_cpu(model, optimizer)
+        rollout_started = time.perf_counter()
+        run.rollout_coordinator.sync_weights(run.policy_model, drain_timeout=trainer.drain_timeout)
+        batch = run.rollout_coordinator.collect()
+        rollout_seconds = time.perf_counter() - rollout_started
+        _append_training_trajectories(run.config.train_logging.trajectory_path,
+            step=-(state.batches + 1), trajectories=batch.trajectories)
+        metrics, _ = update_policy(run, batch.trajectories, actor_update=False)
+        diagnostics = {key.removeprefix("value/frozen_"): value for key, value in metrics.items()
+                       if key.startswith("value/frozen_")}
+        good = state.observe(diagnostics, trainer)
+        generated = sum(len(turn.completion_token_ids) for row in batch.trajectories for turn in row.turns)
+        metrics.update({"warmup/batch": state.batches, "warmup/consecutive_ready": state.consecutive,
+            "warmup/gate_passed": float(good), "warmup/ready": float(state.ready),
+            "policy/optimizer_steps": 0., "trainer/actor_updates": 0.,
+            "trainer/rollout_time_seconds": rollout_seconds,
+            "trainer/rollout_tokens_per_second": generated / max(rollout_seconds, 1e-9),
+            "trainer/generated_tokens": generated})
+        metrics.update({key: float(value) for key, value in batch.stats.items()})
+        path = _save_warmup_checkpoint(run, state)
+        metrics["trainer/full_step_time_seconds"] = time.perf_counter() - started
+        payload = {"phase": "critic_warmup", "batch": state.batches,
+                   "checkpoint_path": str(path), "metrics": metrics}
+        _append_json(run.config.train_logging.metrics_path, payload)
+        run.wandb_logger.log_step(step=state.batches - 1, metrics=metrics)
+        print(json.dumps(payload, sort_keys=True), flush=True)
+        if observe_step is not None:
+            observe_step(payload)
+        if state.failed:
+            raise RuntimeError("Critic has not passed fresh-rollout calibration; actor updates have not started")
+
+
+def _save_tokenizer(run, checkpoint_dir):
+    save = getattr(getattr(run, "tokenizer", None), "save_pretrained", None)
+    if callable(save):
+        save(Path(checkpoint_dir) / "policy")
+
+
 def run_training(run, *, observe_step=None):
     """Run native collection and learning, persisting complete continuation state."""
     from .grpo import _append_training_trajectories
     from .eval import run_eval
     config, trainer = run.config, run.config.trainer
+    from .value_warmup import enabled as warmup_enabled, load_state, save_state
+    warmup = None
+    if warmup_enabled(trainer):
+        warmup = run.value_warmup_state or load_state(config, actor_start_step=run.start_step)
+        run = replace(run, value_warmup_state=warmup)
     reload_to_device(run.policy_model, run.policy_optimizer, device=trainer.train_device, dtype=trainer.train_dtype)
     if run.value_model is not None and trainer.algorithm != "value_mis_sc":
         _reload_critic(run)
     final_step = run.start_step + trainer.num_steps - 1
     try:
+        if warmup is not None:
+            _run_value_warmup(run, warmup, observe_step=observe_step)
         for step in range(run.start_step, final_step + 1):
             started = time.perf_counter()
             trainables = [(run.policy_model, run.policy_optimizer)]
@@ -260,6 +384,8 @@ def run_training(run, *, observe_step=None):
             _append_training_trajectories(config.train_logging.trajectory_path, step=step, trajectories=batch.trajectories)
             update_started = time.perf_counter()
             metrics, audit = update_policy(run, batch.trajectories)
+            if warmup is not None:
+                warmup.actor_updates = step + 1
             update_seconds = time.perf_counter() - update_started
             generated = sum(len(turn.completion_token_ids) for row in batch.trajectories for turn in row.turns)
             rewards = [row.evaluation.reward.reward for row in batch.trajectories]
@@ -284,9 +410,13 @@ def run_training(run, *, observe_step=None):
                 policy_model=run.policy_model, value_model=run.value_model,
                 policy_optimizer=run.policy_optimizer, value_optimizer=run.value_optimizer)
             if path is not None:
+                _save_tokenizer(run, path)
                 save_dataset_checkpoint(run.rollout_coordinator, Path(path))
+                if warmup is not None:
+                    save_state(path, warmup, config)
             metrics["trainer/full_step_time_seconds"] = time.perf_counter() - started
-            run.wandb_logger.log_step(step=step, metrics=metrics)
+            metrics["trainer/actor_updates"] = step + 1
+            run.wandb_logger.log_step(step=step + (warmup.batches if warmup is not None else 0), metrics=metrics)
             payload = {"step": step, "metrics": metrics}
             if path is not None:
                 payload["checkpoint_path"] = str(path)

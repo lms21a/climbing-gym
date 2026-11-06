@@ -171,14 +171,25 @@ class Env:
             return KnightsKnavesEnv(**dict(self.args))
 
         if env_name == "futoshiki":
-            from climbing_gym.envs.futoshiki import FutoshikiEnv, dense_futoshiki_reward, exact_futoshiki_reward, accuracy_futoshiki_reward
-            rewards = {"dense": dense_futoshiki_reward, "dense_accuracy": accuracy_futoshiki_reward, "exact_match": exact_futoshiki_reward}
+            from climbing_gym.envs.futoshiki import FutoshikiEnv, dense_futoshiki_reward, exact_futoshiki_reward, accuracy_futoshiki_reward, strict_exact_futoshiki_reward
+            rewards = {"dense": dense_futoshiki_reward, "dense_accuracy": accuracy_futoshiki_reward, "exact_match": exact_futoshiki_reward, "exact_match_strict": strict_exact_futoshiki_reward}
             reward_name = str(self.reward or "dense").strip().lower()
             if reward_name not in rewards:
                 raise ValueError(f"Unsupported Futoshiki reward: {reward_name!r}")
             env_args=dict(self.args)
             env_args['reward_profile']=reward_name
             return FutoshikiEnv(reward_fn=rewards[reward_name], **env_args)
+
+        if env_name in {"cfop_cube", "cfop_phase"}:
+            from climbing_gym.envs.cfop_cube import (
+                CFOPCubeEnv, CFOPPhaseEnv, cfop_dense_v2_reward, cfop_phase_v1_reward,
+            )
+            expected = "cfop_phase_v1" if env_name == "cfop_phase" else "cfop_dense_v2"
+            if str(self.reward).strip().lower() != expected:
+                raise ValueError(f"{env_name} requires reward={expected!r}.")
+            cls, reward = ((CFOPPhaseEnv, cfop_phase_v1_reward) if env_name == "cfop_phase"
+                           else (CFOPCubeEnv, cfop_dense_v2_reward))
+            return cls(reward_fn=reward, **dict(self.args))
 
         raise ValueError(f"Unsupported env.name={env_name!r}.")
 
@@ -241,9 +252,16 @@ class PPOTrainer:
     value_optimizer_backing_path: str = ""
     value_mis_alpha: float = 0.4
     value_mis_policy_lambda: float | None = None
+    # Zero/zero keeps generic value-MIS updates ungated. Historical Knights
+    # uses 10/30 batches and three consecutive fresh, pre-fit successes.
+    value_warmup_min_batches: int = 0
+    value_warmup_max_batches: int = 0
+    value_warmup_consecutive_ready: int = 3
+    value_warmup_max_abs_bias: float = 0.08
     release_inference_buffers_before_update: bool = True
     optimizer_chunk_elements: int = 4194304
     optimizer_workspace_bytes: int = 50331648
+    optimizer_pin_state: bool = True
     mis_use_value: bool = True
     mis_token_ratio_min: float = 0.95
     mis_token_ratio_max: float = 1.05

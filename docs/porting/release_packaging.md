@@ -1,5 +1,9 @@
 # Release packaging and documentation
 
+This note records the initial release. Subsequent example/CFOP/critic-readiness
+changes and current distribution checks are in the
+[follow-up packaging report](followup_packaging.md).
+
 This is a local-only release preparation. No remote repository was created,
 no git push or package publication occurred, and no source SimplePT checkout was
 changed. The root coordinator owns the final local commit.
@@ -34,7 +38,7 @@ The dev group contains pytest. `uv.lock` records the validated primary dependenc
 versions (Torch 2.10.0, Transformers 4.57.1, Datasets 4.4.2, Safetensors 0.7.0,
 Hub 0.36.2, W&B 0.23.1, Triton 3.6.0, FlashAttention 2.8.3, NumPy 2.2.6,
 pytest 9.0.2); transitive resolver results were not reinstalled into the shared
-migration environment, so clean-environment CI remains a separate validation.
+migration environment; clean-environment dependency installation was not validated.
 
 ## Portable examples and docs
 
@@ -54,7 +58,9 @@ limits, BF16 packing/compile defaults, sparse probability timing, prior/baseline
 comparisons, online W&B customization, local durable records, memory/resume,
 complete evaluation traces, and verified greedy likelihood projection. The
 projection documentation explicitly rejects exact-MH claims and stronger-teacher
-references. CPU CI only tests and builds; it has no publishing step.
+references. The initially included CPU CI configuration was removed at the user's
+request; the current repository contains no GitHub workflows. Local test and build
+commands remain documented.
 
 A shared path helper now expands `~`, `$VAR`, and `${VAR}`, reports unset
 variables clearly, and resolves relative values against the TOML directory.

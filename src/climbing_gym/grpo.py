@@ -266,7 +266,8 @@ def _build_policy_optimizer(
             from climbing_gym.cpu_master_adamw import CPUStateMasterAdamW
             factory = CPUStateMasterAdamW
             extra = dict(chunk_elements=getattr(trainer, "optimizer_chunk_elements", 4194304),
-                         workspace_bytes=getattr(trainer, "optimizer_workspace_bytes", 50331648))
+                         workspace_bytes=getattr(trainer, "optimizer_workspace_bytes", 50331648),
+                         pin_state=getattr(trainer, "optimizer_pin_state", True))
         else:
             from climbing_gym.ppo import MasterWeightAdamW
             factory, extra = MasterWeightAdamW, {}
@@ -392,6 +393,7 @@ class ResolvedGRPORun:
     value_optimizer: Any | None = None
     tokenizer: Any | None = None
     training_progress: Any | None = None
+    value_warmup_state: Any | None = None
 
     @property
     def release_inference_buffers_before_update(self):

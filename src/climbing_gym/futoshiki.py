@@ -68,11 +68,14 @@ class Puzzle:
         return hashlib.sha256(json.dumps(data,separators=(',',':')).encode()).hexdigest()
 
 
-def solve(puzzle: Puzzle, *, limit: int | None = 2) -> list[tuple[int, ...]]:
+def solve(puzzle: Puzzle, *, limit: int | None = 2,
+          trace: list[dict] | None = None) -> list[tuple[int, ...]]:
     """Enumerate solutions with MRV search, all-different and inequality propagation.
 
     limit=2 suffices to reject ambiguous puzzles; None enumerates all solutions.
     No supplied solution/target is read by this solver.
+    If trace is supplied, append every domain change and search event to it.
+    Branch snapshots make guesses and backtracking explicit and replayable.
     """
     if limit is not None and limit < 1:
         raise ValueError('limit must be positive or None')
@@ -83,56 +86,163 @@ def solve(puzzle: Puzzle, *, limit: int | None = 2) -> list[tuple[int, ...]]:
         domains[i] = {v}
     found = []
 
-    def propagate(ds):
+    def emit(kind, depth, **details):
+        if trace is not None:
+            trace.append(dict(event=kind, depth=depth, **details))
+
+    def narrow(ds, cell, values, depth, reason, **details):
+        before = ds[cell]
+        if values != before:
+            if trace is not None:
+                emit('narrow', depth, cell=cell, before=sorted(before), after=sorted(values),
+                     reason=reason, **details)
+            ds[cell] = values
+            return True
+        return False
+
+    def propagate(ds, depth):
         changed = True
         while changed:
             changed = False
             if any(not d for d in ds):
+                emit('contradiction', depth, reason='empty_domain')
                 return False
             for unit in units:
                 singles = [next(iter(ds[i])) for i in unit if len(ds[i])==1]
                 if len(singles)!=len(set(singles)):
+                    emit('contradiction', depth, reason='duplicate_singletons',
+                         unit=list(unit), values=singles)
                     return False
                 for i in unit:
                     if len(ds[i])>1:
                         narrowed = ds[i]-set(singles)
                         if not narrowed:
+                            emit('contradiction', depth, reason='all_values_used', cell=i,
+                                 unit=list(unit), before=sorted(ds[i]), used=sorted(set(singles)))
                             return False
-                        if narrowed != ds[i]:
-                            ds[i]=narrowed; changed=True
+                        changed = narrow(ds, i, narrowed, depth, 'all_different',
+                                         unit=list(unit), used=sorted(set(singles))) or changed
                 for v in range(1,n+1):
                     places = [i for i in unit if v in ds[i]]
                     if not places:
+                        emit('contradiction', depth, reason='no_place_for_value',
+                             unit=list(unit), value=v)
                         return False
                     if len(places)==1 and ds[places[0]]!={v}:
-                        ds[places[0]]={v}; changed=True
+                        changed = narrow(ds, places[0], {v}, depth, 'only_place',
+                                         unit=list(unit), value=v) or changed
             for a,b in puzzle.inequalities:
                 da = {v for v in ds[a] if any(v<w for w in ds[b])}
                 db = {w for w in ds[b] if any(v<w for v in ds[a])}
                 if not da or not db:
+                    emit('contradiction', depth, reason='inequality_without_support',
+                         smaller=a, larger=b, smaller_domain=sorted(ds[a]), larger_domain=sorted(ds[b]))
                     return False
                 if da!=ds[a] or db!=ds[b]:
-                    ds[a],ds[b]=da,db; changed=True
+                    # Both support sets are computed from the same pre-change state.
+                    old_a, old_b = sorted(ds[a]), sorted(ds[b])
+                    narrow(ds, a, da, depth, 'inequality', smaller=a, larger=b,
+                           smaller_domain=old_a, larger_domain=old_b)
+                    narrow(ds, b, db, depth, 'inequality', smaller=a, larger=b,
+                           smaller_domain=old_a, larger_domain=old_b)
+                    changed=True
         return True
 
-    def visit(ds):
+    def visit(ds, depth=0):
         if limit is not None and len(found)>=limit:
             return
-        if not propagate(ds):
+        if trace is not None:
+            emit('enter', depth, domains=[sorted(d) for d in ds])
+        if not propagate(ds, depth):
+            emit('dead_end', depth)
             return
         undecided = [i for i,d in enumerate(ds) if len(d)>1]
         if not undecided:
             values=tuple(next(iter(d)) for d in ds)
             assert puzzle.accepts(values)
             found.append(values)
+            emit('solution', depth, values=list(values), solution_index=len(found)-1)
             return
         i=min(undecided,key=lambda i:len(ds[i]))
         for v in sorted(ds[i]):
-            child=[d.copy() for d in ds]; child[i]={v}; visit(child)
+            emit('guess', depth, cell=i, value=v, candidates=sorted(ds[i]),
+                 reason='minimum_remaining_values')
+            child=[d.copy() for d in ds]; child[i]={v}
+            before = len(found)
+            visit(child, depth+1)
+            if trace is not None:
+                emit('backtrack', depth, cell=i, value=v,
+                     solutions_in_branch=len(found)-before, domains=[sorted(d) for d in ds])
             if limit is not None and len(found)>=limit:
                 break
+    if trace is not None:
+        emit('initialize', 0, size=n, givens=[list(g) for g in puzzle.givens],
+             domains=[sorted(d) for d in domains], limit=limit)
     visit(domains)
+    emit('complete', 0, solutions_found=len(found),
+         stopped_at_limit=limit is not None and len(found)>=limit)
     return found
+
+
+def render_solve_trace(puzzle: Puzzle, trace: Sequence[Mapping]) -> str:
+    """Human-readable account of the complete solver search, including failed branches."""
+    def domain(values):
+        return '{'+','.join(map(str, values))+'}'
+
+    def unit_name(unit):
+        fixed = dict(puzzle.givens)
+        unknown = [variable_name(i) for i in unit if i not in fixed]
+        remaining = sorted(set(range(1, puzzle.size+1))-{fixed[i] for i in unit if i in fixed})
+        return ','.join(unknown)+' uses '+domain(remaining)+' once each'
+
+    def candidates(ds):
+        return '; '.join(variable_name(i)+'='+domain(d) for i,d in enumerate(ds) if i not in fixed)
+
+    lines=[]
+    fixed=dict(puzzle.givens)
+    for index,e in enumerate(trace):
+        kind=e['event']; depth=e['depth']; message=''
+        if kind=='initialize':
+            message='Initial candidate sets for the unknowns: '+candidates(e['domains'])+'.'
+        elif kind=='enter':
+            message=f'Enter search branch at depth {depth}.'
+        elif kind=='narrow':
+            reason=e['reason']
+            if reason=='all_different':
+                removed=set(e['before'])-set(e['after'])
+                fixed_values={fixed[i] for i in e['unit'] if i in fixed}
+                excluded=sorted(removed&fixed_values);assigned=sorted(removed-fixed_values)
+                why=f"group {unit_name(e['unit'])}"
+                if excluded:why+=f"; remove values already excluded by the fixed givens {domain(excluded)}"
+                if assigned:why+=f"; remove values already forced in other unknowns of this group {domain(assigned)}"
+            elif reason=='only_place':
+                why=f"group {unit_name(e['unit'])}; this is the only remaining place for {e['value']}"
+            else:
+                def term(i):return str(fixed[i]) if i in fixed else variable_name(i)
+                why=(f"inequality {term(e['smaller'])} < {term(e['larger'])}; "
+                     f"supported pairs between {domain(e['smaller_domain'])} and {domain(e['larger_domain'])}")
+            message=f"{variable_name(e['cell'])}: {domain(e['before'])} -> {domain(e['after'])}, because {why}."
+        elif kind=='guess':
+            message=(f"Branch on {variable_name(e['cell'])}, a smallest unresolved candidate set "
+                     f"{domain(e['candidates'])}. Temporarily assume {variable_name(e['cell'])}={e['value']}.")
+        elif kind=='contradiction':
+            message='Contradiction: '+e['reason'].replace('_',' ')+'. Details: '+json.dumps({k:v for k,v in e.items() if k not in {'event','depth'}})+'.'
+        elif kind=='dead_end':
+            message='This branch has no solution; discard its assumptions.'
+        elif kind=='backtrack':
+            message=(f"Return from assumption {variable_name(e['cell'])}={e['value']}; "
+                     f"that branch contained {e['solutions_in_branch']} solution(s). "
+                     'Restore parent candidate sets: '+candidates(e['domains'])+'.')
+        elif kind=='solution':
+            answer=' '.join(f'{variable_name(i)}={v}' for i,v in enumerate(e['values']) if i not in fixed)
+            message='All constraints checked; complete solution for the unknowns: '+answer+'.'
+        elif kind=='complete':
+            message=(f"Search complete: {e['solutions_found']} solution(s). "
+                     + ('Stopped at the requested solution limit.' if e['stopped_at_limit'] else 'All branches exhausted.'))
+        else:
+            raise ValueError(f'Unknown solver trace event: {kind}')
+        lines.append(f'{index+1:03d}. '+('  '*depth)+message)
+    return '\n'.join(lines)
 
 
 @lru_cache(maxsize=3)

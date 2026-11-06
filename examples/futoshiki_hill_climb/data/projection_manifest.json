@@ -1,0 +1,209 @@
+{
+  "corpora": {
+    "projection_reset.calibration.jsonl.gz": {
+      "bytes": 275542,
+      "curated_sha256": "453fa3821f234ee7c17b4808ccb76e332300d4ebbbc3ce3cf221e5534446e3d1",
+      "gzip_bytes": 23902,
+      "gzip_sha256": "52515f76e65b91c43cd132c650b4244500b054bc5df1749b72877683dbf6ed2a",
+      "kind": "calibration",
+      "ordered_ids_sha256": "45139c5e1c09bfaaa48265483915b1358064ad2ddf3ac65c4b932f6112731f53",
+      "rows": 128,
+      "source_file": "calibration.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "d53ad3fd44d8a747529d25e0b0efadb31841f4cf6dc2d453283e12e105f7d5c8",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 64,
+        "5x5_g9_i5": 64
+      }
+    },
+    "projection_reset.dev.jsonl.gz": {
+      "bytes": 1098053,
+      "curated_sha256": "21c9f6c8e8d96e41f84463d4ebbc5b0257d26ed496a951cf58e3c3ef7923f3f4",
+      "gzip_bytes": 91498,
+      "gzip_sha256": "8d5114f664d3fe1a9f71133f0ac70d8e82ab674f96a619f32da518ae7833eb04",
+      "kind": "dev",
+      "ordered_ids_sha256": "c747535f57a0f44f6f1238551ccc197c61815f966ed2df4c3d70b8853928f305",
+      "rows": 512,
+      "source_file": "dev.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "732e88bf247c2f5ed970465e5e72fcc7df1d23fc678545e136dbd48818dd9fd4",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 256,
+        "5x5_g9_i5": 256
+      }
+    },
+    "projection_reset.final_test.jsonl.gz": {
+      "bytes": 2203299,
+      "curated_sha256": "65c577168031c825fabd807981be56de3edc83ac817305cbda46fd47da7fdcec",
+      "gzip_bytes": 181466,
+      "gzip_sha256": "77571a8a4cc106545e24797cecfa7220bd8b872ca84bc0a7ee998fb86811bd68",
+      "kind": "final_test",
+      "ordered_ids_sha256": "97543805531c5dfc22c3a104988813bdd8251f0a4fe030be60947b3f4b8ca9c5",
+      "rows": 1024,
+      "source_file": "final_test.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "d4c44aafd3a904754110a72151b20610f16de75a48bc494fc8b74e29be8be17d",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 512,
+        "5x5_g9_i5": 512
+      }
+    },
+    "projection_reset.guides_recorded.jsonl.gz": {
+      "bytes": 31245872,
+      "curated_sha256": "ea92e4116e7ba89b562960a07cf9327542841ebf12e3e740b5b46e4f58f3f4f9",
+      "gzip_bytes": 3683536,
+      "gzip_sha256": "99dddb7de4d10652f4b7ae70a02a7dd38a12796d252062f444871c71d69b203a",
+      "kind": "guides_recorded",
+      "ordered_ids_sha256": "8f5d2168d49b97ab7d28147449308b16252243cd02063e3e0103b8d997c151bf",
+      "rows": 2048,
+      "source_file": "experts_1024.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "671dc37ff0ef7cfe63736815801b5442360ea066862befd01c5286f411065df4",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 1024,
+        "5x5_g9_i5": 1024
+      }
+    },
+    "projection_reset.pool_5x5_g11_i5.jsonl.gz": {
+      "bytes": 5448785,
+      "curated_sha256": "d51b93814e296812eaa3596fefd238b1096e452c5243bdf12ac87df62e8a09aa",
+      "gzip_bytes": 464881,
+      "gzip_sha256": "31293b60e963fa2d56689c521baf11d5bbcfaac9d4e959376c9b5c4610dc949d",
+      "kind": "pool_5x5_g11_i5",
+      "ordered_ids_sha256": "c3ebd90823b406f80d5d974cc79130b877801b0f43aa8425ae1ee50233d8fc0a",
+      "rows": 2560,
+      "source_file": "pool_5x5_g11_i5.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "70abd719875d56d9a3bca82ff7546baaf461e725fba66f97af2339f0539f659b",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 2560
+      }
+    },
+    "projection_reset.pool_5x5_g9_i5.jsonl.gz": {
+      "bytes": 14273133,
+      "curated_sha256": "86ed2654ba93384190186bcba0ebcc8cf51713e5ff6d47499a6b45dfafed6a96",
+      "gzip_bytes": 1170276,
+      "gzip_sha256": "051029f9195e7fe1c06c199e396caa46f328d090cf959538e3e8d5dc49877da5",
+      "kind": "pool_5x5_g9_i5",
+      "ordered_ids_sha256": "e4df939e97ec8237e341082c231ee7a6ab7142adc3296de1185b69a8efd00732",
+      "rows": 6656,
+      "source_file": "pool_5x5_g9_i5.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "aed10d72b732677cefe0cc07ed9cbee7c1a1db2d9e0c286132d2f704b04ce848",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g9_i5": 6656
+      }
+    },
+    "projection_reset.train_recorded.jsonl.gz": {
+      "bytes": 28892927,
+      "curated_sha256": "7805a88a9ba35e79d4078bae001535750d8bdb989814007565e4da6229b6d9de",
+      "gzip_bytes": 3024052,
+      "gzip_sha256": "c5bca0a03ba0cbf2c8323dee1b241b0258478cfa43d6d5972f538c2d517d63ff",
+      "kind": "train_recorded",
+      "ordered_ids_sha256": "8f5d2168d49b97ab7d28147449308b16252243cd02063e3e0103b8d997c151bf",
+      "rows": 2048,
+      "source_file": "projected_1024.jsonl",
+      "source_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "source_sha256": "1675aa2f1ded744cc7cf4542a59b84fa1aef6a89da7d389b045fdcd924fb9d62",
+      "stage": "projection_reset",
+      "tiers": {
+        "5x5_g11_i5": 1024,
+        "5x5_g9_i5": 1024
+      }
+    },
+    "solver_projection_256.calibration.jsonl.gz": {
+      "bytes": 231624,
+      "curated_sha256": "fd60c04e500402699d1fbc5714b5132d7e27b88bebac6ca973e5e8ccd1949be6",
+      "gzip_bytes": 17077,
+      "gzip_sha256": "684b3e187fa5b7af73712b377c14c2090c541e95df6b710ee53f1c5e6725591b",
+      "kind": "calibration",
+      "ordered_ids_sha256": "b46b6276708ce04620d81f642d012b054ff91acbb80dc9d1e16b90d4c0579d49",
+      "rows": 128,
+      "source_file": "calibration.jsonl",
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_sha256": "3075eac4e9407a8c91fa65547678e1598de8cd3f70e46e2b64780e0227c63dc9",
+      "stage": "solver_projection_256",
+      "tiers": {
+        "4x4_g4_i5": 32,
+        "4x4_g5_i4": 32,
+        "4x4_g6_i3": 32,
+        "4x4_g7_i3": 32
+      }
+    },
+    "solver_projection_256.guides_recorded.jsonl.gz": {
+      "bytes": 15543258,
+      "curated_sha256": "d3129f39d3a1a59679fd566861374dd5ab43910e9d308a5e0d50f4e92a85c699",
+      "gzip_bytes": 1003138,
+      "gzip_sha256": "03ba27a292dd2e24a5039c952233f6e326be8abc57b35a4ac20236079254fb39",
+      "kind": "guides_recorded",
+      "ordered_ids_sha256": "9564b9cfdc98ca2a1a07f97e16b31d3d8718dc573c59d54fbcb3a07a44b84eb4",
+      "rows": 1024,
+      "source_file": "solver_experts.jsonl",
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_sha256": "a9c4461aefa31076b5e055eecc78329995c559530ac9623749c5f4aaa5c8388e",
+      "stage": "solver_projection_256",
+      "tiers": {
+        "4x4_g4_i5": 256,
+        "4x4_g5_i4": 256,
+        "4x4_g6_i3": 256,
+        "4x4_g7_i3": 256
+      }
+    },
+    "solver_projection_256.test.jsonl.gz": {
+      "bytes": 231622,
+      "curated_sha256": "955a58b4be96e2ac992ecf93e6185e0bd9afb0293c714c95bd4555ee19353ecb",
+      "gzip_bytes": 17062,
+      "gzip_sha256": "39cc36a0bbf9fdb7a725342258d5640da2f171c834415bddb4d53c528ddacaae",
+      "kind": "test",
+      "ordered_ids_sha256": "15ea32b0e992ce771cddff8bd1e42bfbc545ad7c176cce74e2f8666945a64b96",
+      "rows": 128,
+      "source_file": "test.jsonl",
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_sha256": "19d4442cabdbeed4efd59be0cd6802337707cd5c71ddd744d9a6176e9dd50d98",
+      "stage": "solver_projection_256",
+      "tiers": {
+        "4x4_g4_i5": 32,
+        "4x4_g5_i4": 32,
+        "4x4_g6_i3": 32,
+        "4x4_g7_i3": 32
+      }
+    },
+    "solver_projection_256.train_recorded.jsonl.gz": {
+      "bytes": 3526097,
+      "curated_sha256": "8ff6655fd02b4f65457ca1f4bf9416f2f5741b6e32a4c031f2060044397be3fe",
+      "gzip_bytes": 623436,
+      "gzip_sha256": "fd395071181cd7c628d51ec0ee4ae0b96391d038ed729cf96e96ab157cfc67e0",
+      "kind": "train_recorded",
+      "ordered_ids_sha256": "5f984e1edfe24e17135a6ca3af009ccb8bbc6df897a99aeaf61429d4b10f2083",
+      "rows": 256,
+      "source_file": "projected_256.jsonl",
+      "source_run": "futoshiki_epochs_solver_projection_20261010",
+      "source_sha256": "c02f7edeaaaf20c175bf108499223c4e51563b3fe50285abb0ff53aff8990d1f",
+      "stage": "solver_projection_256",
+      "tiers": {
+        "4x4_g4_i5": 64,
+        "4x4_g5_i4": 64,
+        "4x4_g6_i3": 64,
+        "4x4_g7_i3": 64
+      }
+    }
+  },
+  "generation_recipe_version": "futoshiki-hill-climb-v1",
+  "schema_version": 1,
+  "tokenizer": {
+    "eos_token": "<|im_end|>",
+    "eos_token_id": 7,
+    "files": {
+      "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+      "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+      "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+    },
+    "name": "LiquidAI/LFM2.5-1.2B-Instruct"
+  }
+}

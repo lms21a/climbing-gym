@@ -1,0 +1,693 @@
+{
+  "schema_version": 1,
+  "article": {
+    "title": "Hill climbing with a 1.2B language model",
+    "date": "2026-11-05",
+    "status": "unpublished local draft",
+    "source_path": "/Users/lukas.slifierz/Research/lms21a.github.io/src/content/posts/hill-climbing-with-a-small-model.mdx",
+    "git_commit": null,
+    "publication_url": null,
+    "evidence": "Read-only excerpts of the local draft and its evidence/source manifests, corroborated against archived run artifacts. No private chat transcripts are bundled."
+  },
+  "historical_roots_are_metadata_only": true,
+  "normal_workflow_requires_original_checkout": false,
+  "source_repository": {
+    "remote": "https://github.com/lms21a/simple-pt",
+    "historical_commits_publicly_resolved": false,
+    "lookup_note": "Authenticated GitHub commit lookups for 6288e020e4856d9347868a53f5713d6cd01db55f and 6870454361050834c069dcb7d6c248d40dcb439e returned HTTP422 on 2026-11-06; local source IDs are retained without fabricated links."
+  },
+  "runs": {
+    "gsm8k": "lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002",
+    "countdown3": "lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002",
+    "countdown4": "lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002",
+    "rl500": "futoshiki_solverprojection256_epoch1_flashreinforce500_b128_20261010",
+    "rl750": "futoshiki_solverprojection256_epoch1_flashreinforce750_b128_20261011",
+    "rl1000": "futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011",
+    "projection_reset": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+    "g9": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+    "g8": "futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017",
+    "g6": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017"
+  },
+  "sources": [
+    {
+      "id": "gsm8k:manifest",
+      "historical_run": "lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/manifest.json",
+      "sha256": "0a099fe63d633b468b879de482c00e39ad683c42737f81908ee1facc904c9c6e",
+      "bytes": 31583,
+      "recorded_fields": {
+        "seed": 20261002
+      }
+    },
+    {
+      "id": "countdown3:manifest",
+      "historical_run": "lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/manifest.json",
+      "sha256": "92ea83c7d5245df4be9cca825c39e945f545febe9d48884552bb7069698b5356",
+      "bytes": 31751,
+      "recorded_fields": {
+        "source_checkpoint": "/mnt/d/SimplePT/runs/training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/checkpoints/step_9/policy",
+        "seed": 20261002
+      }
+    },
+    {
+      "id": "countdown4:manifest",
+      "historical_run": "lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002/manifest.json",
+      "sha256": "5dd6a3a2897095ffaaa313e990153bd785cae562742f2a6288a26a674326fae9",
+      "bytes": 32366,
+      "recorded_fields": {
+        "source_checkpoint": "/mnt/d/SimplePT/runs/training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/checkpoints/step_12/policy",
+        "seed": 20261002
+      }
+    },
+    {
+      "id": "rl500:manifest",
+      "historical_run": "futoshiki_solverprojection256_epoch1_flashreinforce500_b128_20261010",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce500_b128_20261010/manifest.json",
+      "sha256": "75262d08ea28025243c02f7374c4b4f9a6e987d753aab5e411530df9e1e26d4d",
+      "bytes": 93679,
+      "recorded_fields": {
+        "parent_commit": "f9a307d17401e02b670a259de8ffe8b7c94eb4ef",
+        "source_checkpoint": "/home/lukas928/SimplePT/runs/experiments/futoshiki_epochs_solver_projection_20261010/arms/projection256/checkpoints/epoch_1",
+        "source_checkpoint_sha256": {
+          "config.json": "9f9e05a853aea04f5e1829999dfc29f2e79c7a01b3806195d768d76ac59b9055",
+          "pytorch_model.bin": "afc545b90546d3e2f7a53eac5444336b8de022381b9e5191fbd998a9c64f8d07",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176"
+        }
+      }
+    },
+    {
+      "id": "rl750:manifest",
+      "historical_run": "futoshiki_solverprojection256_epoch1_flashreinforce750_b128_20261011",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce750_b128_20261011/manifest.json",
+      "sha256": "f5004fb8d93791349b0c7cfee0082f2343853721f73c673319148a91da1df76b",
+      "bytes": 177674,
+      "recorded_fields": {
+        "source_commit": "856fc743f33774ee46fccd51405264ec6f64a776",
+        "parent_commit": "f9a307d17401e02b670a259de8ffe8b7c94eb4ef",
+        "source_checkpoint": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce500_b128_20261010/checkpoints/step_499",
+        "source_checkpoint_sha256": {
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176",
+          "config.json": "9f9e05a853aea04f5e1829999dfc29f2e79c7a01b3806195d768d76ac59b9055",
+          "pytorch_model.bin": "fe8f5bb18e6dbcede0c61fc67500de08754a960adafdc782a910287cd67427fd",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+        },
+        "source_optimizer_sha256": "adc97ca0ecee66e9e750841a2ba3049292a1a86a02d41fe223cc5e27c28b5388",
+        "source_rng_sha256": "256b561fd77e828ce7edaf6dbec3184c80a2dd54bf15cd5bfaf4de62709cd002",
+        "dataset_bank_expansion_seed": 20261011
+      }
+    },
+    {
+      "id": "rl1000:manifest",
+      "historical_run": "futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011",
+      "artifact": "manifest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/manifest.json",
+      "sha256": "f83cfe9651ac43737e8636940838e78ed936a05db1c3621f8cbcdb9722e6054d",
+      "bytes": 221197,
+      "recorded_fields": {
+        "source_commit": "6288e020e4856d9347868a53f5713d6cd01db55f",
+        "parent_commit": "856fc743f33774ee46fccd51405264ec6f64a776",
+        "source_checkpoint": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce750_b128_20261011/checkpoints/step_749",
+        "source_checkpoint_sha256": {
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176",
+          "config.json": "9f9e05a853aea04f5e1829999dfc29f2e79c7a01b3806195d768d76ac59b9055",
+          "pytorch_model.bin": "ec582697a221d00b0025e04e3cee96bddd495803815bda69f789dfb88c8a0cef",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+        },
+        "source_optimizer_sha256": "c0185a2c3cce28872f082bb7766505d95671d2dffcaea7299df268e5a6769b57",
+        "source_rng_sha256": "df35c23da2d995d34b66668753dafc9eb367ec178b0d3ecb6940fa3bc8bf8fef",
+        "dataset_bank_expansion_seed": 20261012,
+        "training_tier_counts_per_batch": {
+          "4x4_g4_i5": 48,
+          "4x4_g5_i4": 48,
+          "4x4_g6_i3": 16,
+          "4x4_g7_i3": 16
+        },
+        "training_generation_budget": 8192
+      }
+    },
+    {
+      "id": "gsm8k:stop_summary.json",
+      "historical_run": "lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002",
+      "artifact": "stop_summary.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/stop_summary.json",
+      "sha256": "ddcdf08d41373c64a4543939d79aa3032bcc333faacdf153c2f588618aa11852",
+      "bytes": 1705
+    },
+    {
+      "id": "countdown3:stop_summary.json",
+      "historical_run": "lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002",
+      "artifact": "stop_summary.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/stop_summary.json",
+      "sha256": "425044c3765c5e6c4b5017b5a5ecddd9e8ffb655a40863915853eb414fa1d616",
+      "bytes": 1589
+    },
+    {
+      "id": "countdown4:completion_summary.json",
+      "historical_run": "lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002",
+      "artifact": "completion_summary.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002/completion_summary.json",
+      "sha256": "f54627a6043b65d982bdbab47faaf888b1b8ac6379591f8a7d2302786dfe0174",
+      "bytes": 5747
+    },
+    {
+      "id": "rl1000:results/final_eval_report.md",
+      "historical_run": "futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011",
+      "artifact": "final_eval_report.md",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/results/final_eval_report.md",
+      "sha256": "ae52b47c9e9baa8952eab6266af9e43a692b91af8df27e8c0e99c96ce88dd1ec",
+      "bytes": 3368
+    },
+    {
+      "id": "g9:protocol",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "protocol.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/protocol.json",
+      "sha256": "d83112d322adaa272375855251f2b7fbe49cd16527ed7eb350eae3dee2d877f9",
+      "bytes": 34370,
+      "recorded_fields": {
+        "commit": "b0f03d2c19ce8d016bd04ec52658b3d6a8f283f6",
+        "tier": "5x5_g9_i5",
+        "steps": 100,
+        "batch_size": 128,
+        "collection_size": 256,
+        "max_tokens": 8192,
+        "context": 9216,
+        "objective": "mis_sc",
+        "behavior_topk": 32,
+        "ratio_min": 0.5,
+        "ratio_max": 5.0,
+        "seed": 20261012,
+        "train_seed": 20261012,
+        "evaluation": {
+          "expert_samples": 4,
+          "next_samples": 4,
+          "monitor_samples": 8,
+          "test_samples": 8,
+          "seed": 20261001
+        },
+        "fresh_optimizer": true,
+        "optimizer_resume": false,
+        "optimizer_step_offset": 0,
+        "checkpoint_sha256": {
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176",
+          "config.json": "98ee087d051e721aa025c6ea639cb87a691fdfe623d0387b370f02e9a4d60fb2",
+          "pytorch_model.bin": "868872d834cb6fd6fe58501f15ee3798035ede416acad1753cdb9e695d1dc031",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+        },
+        "data_sha256": {
+          "train": "a97d18e2651db447a315ce74b8cf491c853367e8df8213ba1c372082f5c85482",
+          "expert": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+          "next": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+          "monitor": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+          "test": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca",
+          "calibration": "ef9427abe404523d3263759bb4a4d96323678b22e7fab2abf2baca2c430a210e"
+        }
+      }
+    },
+    {
+      "id": "g9:effective_config.json",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "effective_config.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/effective_config.json",
+      "sha256": "a82475a76b671979b2951fbcb7fd0a44f4982771cc5f086dcf37273c91be2cf0",
+      "bytes": 6260
+    },
+    {
+      "id": "g9:result.json",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "result.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/result.json",
+      "sha256": "5e68b2022ef14927a8cbdf01f79055f8a49e93b2b3420868c4afa8a0107058f9",
+      "bytes": 298
+    },
+    {
+      "id": "g8:protocol",
+      "historical_run": "futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017",
+      "artifact": "protocol.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/protocol.json",
+      "sha256": "0a55bcfad36d67f4a96bbce9b3ce8b895ff26ef5c70e19081e6871b31422febc",
+      "bytes": 38928,
+      "recorded_fields": {
+        "commit": "2c04bb322c358d0d4e6cd7b1fe4809aeed388c64",
+        "tier": "5x5_g8_i7",
+        "steps": 100,
+        "batch_size": 128,
+        "collection_size": 256,
+        "max_tokens": 8192,
+        "context": 9216,
+        "objective": "mis_sc",
+        "behavior_topk": 32,
+        "ratio_min": 0.5,
+        "ratio_max": 5.0,
+        "seed": 20261012,
+        "train_seed": 20261012,
+        "evaluation": {
+          "expert_samples": 4,
+          "next_samples": 4,
+          "harder_samples": 4,
+          "monitor_samples": 8,
+          "test_samples": 8,
+          "seed": 20261001
+        },
+        "fresh_optimizer": false,
+        "optimizer_resume": true,
+        "optimizer_step_offset": 100,
+        "train_sampling_offset": 12800,
+        "evaluation_seed_offsets": {
+          "expert": 200000,
+          "next": 200000,
+          "harder": 200000,
+          "monitor": 0,
+          "test": 100000
+        },
+        "checkpoint_sha256": {
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176",
+          "config.json": "5abbf6f67b098da5d29d9ca18f7239624f311d39c11b077eb406eb229921de79",
+          "pytorch_model.bin": "172c286f0373a0c43e42da49ed3b464fd123975b4ed62a9eeca847755ff94560",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+        },
+        "data_sha256": {
+          "train": "bb7cf2784f5b6f92d3bf754213e60dac4588457c012479742a2b50c6e1905d16",
+          "expert": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+          "next": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+          "harder": "8f7a0d868d0f488ec9b7e346b75e4014f9d9752d042e695d5fab4bbab6e1da54",
+          "calibration": "18ccfd2733bf3c6a6d08f659e67a8c9f94f3621ee4db5b6836f1c11e58460d5b",
+          "monitor": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+          "test": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca"
+        }
+      }
+    },
+    {
+      "id": "g8:effective_config.json",
+      "historical_run": "futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017",
+      "artifact": "effective_config.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/effective_config.json",
+      "sha256": "c3e519ea389229791477249c46566af5f20b9570ddf51955fca24e276d753ce6",
+      "bytes": 6253
+    },
+    {
+      "id": "g8:result.json",
+      "historical_run": "futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017",
+      "artifact": "result.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/result.json",
+      "sha256": "5c486fcc2e3f007bab96da0c74707ab28faee8c641f082ca562d0885800bbd26",
+      "bytes": 296
+    },
+    {
+      "id": "g6:protocol",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "protocol.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/protocol.json",
+      "sha256": "a215f54a1d515b5fd2035c9c2765150c29eddaabe6a7c50b4fdba6912105873b",
+      "bytes": 40878,
+      "recorded_fields": {
+        "commit": "897d3584e2e0dabbc93cad463a69a22b55f6e068",
+        "tier": "5x5_g6_i8",
+        "steps": 100,
+        "batch_size": 128,
+        "collection_size": 256,
+        "max_tokens": 8192,
+        "context": 9216,
+        "objective": "mis_sc",
+        "behavior_topk": 32,
+        "ratio_min": 0.5,
+        "ratio_max": 5.0,
+        "seed": 20261012,
+        "train_seed": 20261012,
+        "evaluation": {
+          "expert_samples": 4,
+          "next_samples": 4,
+          "harder_samples": 4,
+          "hardest_samples": 4,
+          "monitor_samples": 8,
+          "test_samples": 8,
+          "seed": 20261001
+        },
+        "fresh_optimizer": false,
+        "optimizer_resume": true,
+        "optimizer_step_offset": 200,
+        "train_sampling_offset": 25600,
+        "evaluation_seed_offsets": {
+          "expert": 200000,
+          "next": 200000,
+          "harder": 200000,
+          "hardest": 200000,
+          "monitor": 0,
+          "test": 100000
+        },
+        "checkpoint_sha256": {
+          "chat_template.jinja": "f05bf4b967dc993bdc7a2fe6e43759ee218eb0eb340d68b063e1c4f8ad148176",
+          "config.json": "5abbf6f67b098da5d29d9ca18f7239624f311d39c11b077eb406eb229921de79",
+          "pytorch_model.bin": "c16900f05f031962c355145dc886c5fe8348afbac5527b8f59b2bce1dd18bd6d",
+          "special_tokens_map.json": "742aefe2b7dec496e8caffdba03a75d0c1a9925d53bd3f3e0d388c96b591b6f4",
+          "tokenizer.json": "df1d8d5ec5d091b460562ffd545e4a5e91d17d4a0db7ebe733be34ed374377bd",
+          "tokenizer_config.json": "2a52ec012d3df831ba434b081bef3726a6ee22501f062ad8353c557a0cfa0d01"
+        },
+        "data_sha256": {
+          "train": "1046530d6071965b6cef2439488df94a6f321c9a8b10c385c47c79e7c587315e",
+          "expert": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+          "next": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+          "harder": "8f7a0d868d0f488ec9b7e346b75e4014f9d9752d042e695d5fab4bbab6e1da54",
+          "hardest": "a8ce20bcbb5071320ae579b3323008997ae6f2d67b7fe0788e838dd99931bc20",
+          "calibration": "5bf8b274164fdd7d93f696e87bc0e20dc2e5c1d8945f313d6cb339c666f3e4ec",
+          "monitor": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+          "test": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca"
+        }
+      }
+    },
+    {
+      "id": "g6:effective_config.json",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "effective_config.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/effective_config.json",
+      "sha256": "309949e0dfb70ce248b015d228c2f62edf2f75924f15809c44293ca21186ebfb",
+      "bytes": 6250
+    },
+    {
+      "id": "g6:result.json",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "result.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/result.json",
+      "sha256": "af938415632f32f20c19e5f66cf1d76d8ab29b170dddb6dc39085e310e1f2e95",
+      "bytes": 295
+    },
+    {
+      "id": "projection_reset:protocol",
+      "historical_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "artifact": "protocol.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_two_expert_projection_sft_prewarmup_20261015/protocol.json",
+      "sha256": "6e53a1b877734040adc7fde692ead5b998abb9cbe44ac0be0fdf97f0068c4f97",
+      "bytes": 5409,
+      "recorded_fields": {
+        "seed": 2026101503,
+        "inference_seed": 20261012,
+        "student_sha256": "c27249979db28a1725f1b8df01e96a851774a8298b0dfcb83b9330a74109f8c8",
+        "teachers": {
+          "5x5_g11_i5": {
+            "model": "/home/lukas928/SimplePT/runs/training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/checkpoints/step_500/policy",
+            "physical_model": "/mnt/d/SimplePT/runs/training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/checkpoints/step_500/policy",
+            "sha256": "f47ea3c1e6d373eb46a0cc0b0e829c110546384a436fddb8b6ac8a1ddab0d273"
+          },
+          "5x5_g9_i5": {
+            "model": "/home/lukas928/SimplePT/runs/training/futoshiki5_g9i5_curriculum_from_easy165_flash100_b128_8k_20261015/checkpoints/step_235/policy",
+            "physical_model": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_curriculum_from_easy165_flash100_b128_8k_20261015/checkpoints/step_235/policy",
+            "sha256": "cfc611e2b1c4b2a6ea1e2587393a24b0142e66ae07b36c24f586ebd3ee015936"
+          }
+        },
+        "projection_capacity_selected": 64,
+        "projection_request_queue_size": 512,
+        "projection_refinements": 10,
+        "projection_refinement_length_rule": "Suffix budget=len(retained completion)-cut; empty initialization budget8192.",
+        "sft_batch_size": 32,
+        "sft_learning_rate": 1e-05,
+        "sft_epochs": 2,
+        "data_sha256": {
+          "calibration.jsonl": "d53ad3fd44d8a747529d25e0b0efadb31841f4cf6dc2d453283e12e105f7d5c8",
+          "dev.jsonl": "732e88bf247c2f5ed970465e5e72fcc7df1d23fc678545e136dbd48818dd9fd4",
+          "final_test.jsonl": "d4c44aafd3a904754110a72151b20610f16de75a48bc494fc8b74e29be8be17d"
+        }
+      }
+    },
+    {
+      "id": "projection_reset:experiment.txt",
+      "historical_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "artifact": "experiment.txt",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_two_expert_projection_sft_prewarmup_20261015/experiment.txt",
+      "sha256": "26008f20fa6ffc576a8fdd00b4dcee1dbcb3d4b64f79f9177964a65a63ce517e",
+      "bytes": 5286
+    },
+    {
+      "id": "projection_reset:result.json",
+      "historical_run": "futoshiki5_two_expert_projection_sft_prewarmup_20261015",
+      "artifact": "result.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_two_expert_projection_sft_prewarmup_20261015/result.json",
+      "sha256": "2d3fe1dd90587ad5c2b7897745a3aa1cdd97bb6fbfacaa49264200f013884e40",
+      "bytes": 3427
+    },
+    {
+      "id": "solver_projection:audit",
+      "historical_run": null,
+      "artifact": "projection_summary.json",
+      "original_path": "/home/lukas928/SimplePT/runs/experiments/futoshiki_epochs_solver_projection_20261010/projection_summary.json",
+      "sha256": "4276cef5055aee41a62990240c7d9314f36801e83ed141d73e0865a9b0fffd63",
+      "bytes": 1305,
+      "recorded_fields": {
+        "audited": true,
+        "examples": 1024,
+        "unique_source_puzzles": 1024,
+        "sizes": [
+          64,
+          128,
+          256,
+          512,
+          1024
+        ],
+        "nested": true,
+        "balanced_tiers": true,
+        "train_eval_ids_and_solution_grids_disjoint": true,
+        "all_final_answers_verified": true,
+        "all_tokens_and_native_scores_aligned": true,
+        "max_sequence_tokens": 2987,
+        "mean_completion_tokens": 1183.5810546875,
+        "mean_base_logprob": -0.6891733982696008,
+        "mean_expert_base_logprob": -0.9301785117434308,
+        "projections_more_likely_than_expert": 909,
+        "completions_identical_to_expert": 0,
+        "seconds_this_invocation": 90.57934124500025,
+        "data_sha256": {
+          "64": "6158450111019f6024c733606d4e95caddfa0a1a64023248d419ce07b1bb9a25",
+          "128": "8a5cbaa2e892d53eec33a03c8880255da531ad3b675145ba82bb18c5a2c44daa",
+          "256": "c02f7edeaaaf20c175bf108499223c4e51563b3fe50285abb0ff53aff8990d1f",
+          "512": "d885e2cd3c11101216efa869cd7b02f360f5692bf1507f0035ede99926c4d89e",
+          "1024": "ea7101368e4ca30ad04ed80b4626e37256d4d7060d008593440d6d3a0e6fe0dc"
+        },
+        "limitation": "Correct final answers do not certify every intermediate reasoning statement.",
+        "algorithm": "One full proposal plus ten random-cut refinements; verifier-constrained greedy mean original-model token log probability, not Metropolis-Hastings."
+      }
+    },
+    {
+      "id": "blog:research-notes",
+      "historical_run": null,
+      "artifact": "rl_hill_climbing_blog_research_notes_20261105.md",
+      "original_path": "/home/lukas928/SimplePT/reports/rl_hill_climbing_blog_research_notes_20261105.md",
+      "sha256": "61245b43af65aad3a5d5cf1542504fa31f40e8ee511a8a13203db89f05cf3122",
+      "bytes": 12904
+    },
+    {
+      "id": "curriculum:trace-report",
+      "historical_run": null,
+      "artifact": "futoshiki_peak280_traces_20261030.md",
+      "original_path": "/home/lukas928/SimplePT/reports/futoshiki_peak280_traces_20261030.md",
+      "sha256": "c77531ab75e89168fd272097512b91c13a1a9d320fd96efa1f7919babe705a88",
+      "bytes": 51979
+    },
+    {
+      "id": "g9:eval0:expert",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "expert.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_0/expert.json",
+      "sha256": "bab2e45b1731a403081e36c08960db7f582422566e50432c00937131b6521623",
+      "bytes": 934
+    },
+    {
+      "id": "g9:eval0:next",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "next.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_0/next.json",
+      "sha256": "e7f93a9cf4f75af77e12271e2d0bb75c0b0136c55e9db0077c34d9ca6f6d2d41",
+      "bytes": 937
+    },
+    {
+      "id": "g9:eval0:pooled",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "pooled.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_0/pooled.json",
+      "sha256": "e3667eb396741f61e7358fef4ac76c15a7e6407ec9a89696f1bd9dfcbcf498d2",
+      "bytes": 717
+    },
+    {
+      "id": "g9:eval100:expert",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "expert.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_100/expert.json",
+      "sha256": "ab393c71b4c6a0fc2c6924d7587cd4087c1e0e8b07c7372236f5617267c35518",
+      "bytes": 905
+    },
+    {
+      "id": "g9:eval100:next",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "next.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_100/next.json",
+      "sha256": "16b783b96df7eb6798bca643ec026e73fcd38bdfbc07fc0ec32d22409636f44a",
+      "bytes": 901
+    },
+    {
+      "id": "g9:eval100:pooled",
+      "historical_run": "futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3",
+      "artifact": "pooled.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/eval/step_100/pooled.json",
+      "sha256": "2e494c82bf312f6a58298aba7d48f87f87c6a54c11e72f65cd0a3fd1d47e13a0",
+      "bytes": 723
+    },
+    {
+      "id": "g6:eval0:expert",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "expert.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_0/expert.json",
+      "sha256": "5cb7c061a34e1c8f91de380813d6b68dd73edfb86dc26a1d2bd4e27ea2d8b11d",
+      "bytes": 899
+    },
+    {
+      "id": "g6:eval0:next",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "next.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_0/next.json",
+      "sha256": "c8a64513d0f10f416bef91652a68bce21f19a2457ab150deba58514cd2908c35",
+      "bytes": 888
+    },
+    {
+      "id": "g6:eval0:harder",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "harder.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_0/harder.json",
+      "sha256": "58569f92804a23016985e8c484e87f25820354e54548b4c5302e82eedd7c254d",
+      "bytes": 888
+    },
+    {
+      "id": "g6:eval0:hardest",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "hardest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_0/hardest.json",
+      "sha256": "f93aaa8e8663fbab639bb770cb7f5bebc33c0ab01edb3a86b7619adfb912ee9c",
+      "bytes": 1287
+    },
+    {
+      "id": "g6:eval0:pooled",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "pooled.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_0/pooled.json",
+      "sha256": "af3343e32b4511fd4bc3482e653cf2a68550204d4b3a3327767517c5554d0091",
+      "bytes": 1194
+    },
+    {
+      "id": "g6:eval80:expert",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "expert.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_80/expert.json",
+      "sha256": "7a9bcbdcd6509e1886aba21f9a6ef856fd02946a00dfc741d3a09650eea7558d",
+      "bytes": 902
+    },
+    {
+      "id": "g6:eval80:next",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "next.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_80/next.json",
+      "sha256": "9abbb172ef7d61fa4580134410d5c58cb1d549930e22209ec4c676b442e8a873",
+      "bytes": 896
+    },
+    {
+      "id": "g6:eval80:harder",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "harder.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_80/harder.json",
+      "sha256": "7dc470f4a73034b9d4560a0f6534576e5134bab99b85011f76c778a0f588fe1b",
+      "bytes": 867
+    },
+    {
+      "id": "g6:eval80:hardest",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "hardest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_80/hardest.json",
+      "sha256": "81116c6cb9582538db8cd196bd90e0bac7e91d4a1a23903aab7fae8861e88dc2",
+      "bytes": 893
+    },
+    {
+      "id": "g6:eval80:pooled",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "pooled.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_80/pooled.json",
+      "sha256": "1a2d1419c2a746c478491696dfc721cb317d18a5ce0b260cf4bf2e5c6dd3230a",
+      "bytes": 1208
+    },
+    {
+      "id": "g6:eval100:expert",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "expert.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/expert.json",
+      "sha256": "b3309038f2aec86b38ca28ab85bc3d83739fac1bd1e5f709e0e2313234d1c727",
+      "bytes": 895
+    },
+    {
+      "id": "g6:eval100:next",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "next.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/next.json",
+      "sha256": "3997e227aae0864b56775bbc7f9ac4706f77802535e481d0ea094d463a36250d",
+      "bytes": 898
+    },
+    {
+      "id": "g6:eval100:harder",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "harder.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/harder.json",
+      "sha256": "0592aa0b688fe6d424b6fe58c9828a6b854703b291c8d63c967f8bc06045c81e",
+      "bytes": 872
+    },
+    {
+      "id": "g6:eval100:hardest",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "hardest.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/hardest.json",
+      "sha256": "081c69f17e5f0786d3dbe228ba86e190bc1b656210ac90d08ef8bad567d674f0",
+      "bytes": 896
+    },
+    {
+      "id": "g6:eval100:pooled",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "pooled.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/pooled.json",
+      "sha256": "fb65681ed4d789eeb8a4b7d9f96915d2467219d2f9d5567a757551b3e59fdc79",
+      "bytes": 1199
+    },
+    {
+      "id": "rl1000:full-panel",
+      "historical_run": "futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011",
+      "artifact": "full_panel.json",
+      "original_path": "/home/lukas928/SimplePT/runs/training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/results/full_panel.json",
+      "sha256": "5adce836c018b1cfc29d80d73d62562034c9f0ad981d99f8b65b26665bfd4a0b",
+      "bytes": 47045
+    },
+    {
+      "id": "g6:test100",
+      "historical_run": "futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017",
+      "artifact": "test.json",
+      "original_path": "/mnt/d/SimplePT/runs/training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/eval/step_100/test.json",
+      "sha256": "e668d79312f52f7139e1054e40ef48816e1f44a59aa0dc037ffc874bf5a5febf",
+      "bytes": 1489
+    }
+  ],
+  "excluded_material": [
+    "Private blog chat transcripts",
+    "Original model weights",
+    "Large rollout tensor archives",
+    "Unsupported benchmark implementations"
+  ]
+}

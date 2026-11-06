@@ -1,0 +1,456 @@
+{
+  "schema_version": 1,
+  "mode": "historical_exact_rows",
+  "assets": {
+    "gsm8k": {
+      "calibration": {
+        "file": "gsm8k_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "87542a4fc568b3c7701437b51ff6e151bdb03df173a4d340152c416fa5d08b98",
+        "gzip_sha256": "b6212309b65e72254fb81778f27070db492474d6bc23316bfcb177f9fd48d496",
+        "source": "training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "gsm8k_train.jsonl.gz",
+        "rows": 6400,
+        "sha256": "bf85bd3b33a2944691f45cafe04335a5b00e2ce16b024a1a0f66a6bbc4ab1927",
+        "gzip_sha256": "867a17cacdc06ee146fdfeee1fc3ea0374088d79beb5f53f4996434dd206d474",
+        "source": "training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/data/train.jsonl",
+        "source_rows": "all"
+      },
+      "validation": {
+        "file": "gsm8k_validation.jsonl.gz",
+        "rows": 256,
+        "sha256": "f93f5a3e505ad2011f0fc0007f807f1ed29657a855a756694dd7e8360120b730",
+        "gzip_sha256": "9e127e10902992ee77668f37447ebdbfe9b0cf474d60205678fbedf6a25edbb8",
+        "source": "training/lfm25_instruct_gsm8k_joint_flashreinforce50_b128_lr1e6_20261002/data/validation.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "countdown3": {
+      "calibration": {
+        "file": "countdown3_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "126000e27c6b6e3e7fd7200f287a4bc7a8df403aa76bb6d8e5cf543f37091097",
+        "gzip_sha256": "7184969c26bcc1839f3036fbf44d7e6a333d53de80790f30aebb720d09dde5c8",
+        "source": "training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "countdown3_train.jsonl.gz",
+        "rows": 6400,
+        "sha256": "603f25ab6acc82d563b398790af8cfaed1c6d8ab524298bb7e86f0661d676df5",
+        "gzip_sha256": "bbeb054930335e5e9e5f8c3ac04b122af85e6cfcff1038ccdc59a9adb8c092b7",
+        "source": "training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/data/train.jsonl",
+        "source_rows": "all"
+      },
+      "validation": {
+        "file": "countdown3_validation.jsonl.gz",
+        "rows": 128,
+        "sha256": "ffaafbaeeb6d8cd53a9a36c5a64a553522fa4f14db73f57141523e067bdd4f9d",
+        "gzip_sha256": "82572025cd2726e194f15c9f1254954edf6da3e6239507d17b8b2648279f702d",
+        "source": "training/lfm25_instruct_countdown3_joint_flashreinforce50_from_gsm8k10_b128_lr1e6_20261002/data/validation.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "countdown4": {
+      "calibration": {
+        "file": "countdown4_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "8015a389f28daf87f994994b43993e36f8e97ecd33664c2bb508b380be57ad5e",
+        "gzip_sha256": "0cf5d59a95a83554403d00864a1fb755709ae70b01a749066c4ef481124e9cf1",
+        "source": "training/lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "countdown4_train.jsonl.gz",
+        "rows": 6400,
+        "sha256": "ace418f0de4c84ca1f7c8dbc00cb0fcb77a877ece5737adf0e6e398d87ba1201",
+        "gzip_sha256": "703b9e723b9a500d8e2c4f836f92d49fa0af6ce52f9c04c71174adeb706eecf8",
+        "source": "training/lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002/data/train.jsonl",
+        "source_rows": "all"
+      },
+      "validation": {
+        "file": "countdown4_validation.jsonl.gz",
+        "rows": 128,
+        "sha256": "f0bb06e0f7fbc5c7c95b57f74ab747dc9c8cad4d37f1218047c6053ddb472ea5",
+        "gzip_sha256": "e798d6b004aa635b0abc5f187329e88c0c8c2283a0fbaf2ce8b94ef407b5e793",
+        "source": "training/lfm25_instruct_countdown4_joint_flashreinforce50_from_countdown3_13_b128_lr1e6_20261002/data/validation.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "countdown4_repeat": {
+      "calibration": {
+        "file": "countdown4_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "8015a389f28daf87f994994b43993e36f8e97ecd33664c2bb508b380be57ad5e",
+        "gzip_sha256": "0cf5d59a95a83554403d00864a1fb755709ae70b01a749066c4ef481124e9cf1",
+        "source": "experiments/countdown_maxrl_bpo_post73_20261008/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "countdown4_repeat_test.jsonl.gz",
+        "rows": 256,
+        "sha256": "6a81ead143621d1fd2a37cb828a26bd7c49917fb29cdda09f413adeac718233d",
+        "gzip_sha256": "41f3b770014dcf6bb129db4cf05f5e945fb219403184a32db7ae0b45f056ff43",
+        "source": "experiments/countdown_maxrl_bpo_post73_20261008/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "countdown4_repeat_train.jsonl.gz",
+        "rows": 6400,
+        "sha256": "5422923a342e5c4b1317927f14a88730fa5586cfa1dc60d2923f02a16fcf8787",
+        "gzip_sha256": "cdad9925a9583dceba82d4dfe48fbe7604a31539f59f99c956792477027af027",
+        "source": "experiments/countdown_maxrl_bpo_post73_20261008/data/train_r1.jsonl",
+        "source_rows": "all"
+      },
+      "validation": {
+        "file": "countdown4_validation.jsonl.gz",
+        "rows": 128,
+        "sha256": "f0bb06e0f7fbc5c7c95b57f74ab747dc9c8cad4d37f1218047c6053ddb472ea5",
+        "gzip_sha256": "e798d6b004aa635b0abc5f187329e88c0c8c2283a0fbaf2ce8b94ef407b5e793",
+        "source": "experiments/countdown_maxrl_bpo_post73_20261008/data/validation.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "futoshiki4": {
+      "monitor": {
+        "file": "futoshiki4_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "0024cf2278bf9b41564d5e43bc46051237009e8689e4531b2ee37f0eaacce700",
+        "gzip_sha256": "2aa9175652e4c88b59e6f0c9a42cdc9463a0f06ab91fd644849f2aa7133659ef",
+        "source": "training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "futoshiki4_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "19d4442cabdbeed4efd59be0cd6802337707cd5c71ddd744d9a6176e9dd50d98",
+        "gzip_sha256": "9feb48852c4ed6087aea3d5ccc9bba1c0b8f31c3ba4bdd37079f17c9957a8505",
+        "source": "training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "futoshiki4_train.jsonl.gz",
+        "rows": 128000,
+        "sha256": "dd88b8d12913177f78ed710c725e5ac5b27f8a89c74534bbe9394e6a29ee7786",
+        "gzip_sha256": "c7adff1b7af0f87264159a2ed67b26e64fd15e0953ba0142c88bacc91a68248a",
+        "source": "training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/data/train.jsonl",
+        "source_rows": [
+          0,
+          128000
+        ]
+      },
+      "validation": {
+        "file": "futoshiki4_validation.jsonl.gz",
+        "rows": 128,
+        "sha256": "3075eac4e9407a8c91fa65547678e1598de8cd3f70e46e2b64780e0227c63dc9",
+        "gzip_sha256": "e91df2992ff0819ac02bf454da0ac57c15d24d4b940d28f2853a520719905b01",
+        "source": "training/futoshiki_solverprojection256_epoch1_flashreinforce1000_b128_weighted8k_20261011/data/validation.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "mixed5": {
+      "calibration": {
+        "file": "mixed5_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "61af5def06baddcb66637b5aaa0087c7fe32d041183bc1fc8020a9913657803b",
+        "gzip_sha256": "af9640437c1d2cce8b7a2bbeb68eb5dc457949f96481c4428ad02f69480df4e9",
+        "source": "training/rl1000_futoshiki5_balanced_baseline_extend100to350_b128_8k_20261012/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/rl1000_futoshiki5_balanced_baseline_extend100to350_b128_8k_20261012/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "mixed5_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "1124786d1b7e2c2d06d615039ea5e35a20002d682db367a57046c86bb5ffea29",
+        "gzip_sha256": "d80f5ab2b6f7b0b856a6fa45dc0854fc1bc243608a339caf9b51d623e324ac48",
+        "source": "training/rl1000_futoshiki5_balanced_baseline_extend100to350_b128_8k_20261012/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "mixed5_train.jsonl.gz",
+        "rows": 44800,
+        "sha256": "cc14c1483eb54e9493bf5ad9d677c4ccba25eb314eed51051923f774422c1763",
+        "gzip_sha256": "5eb82ec288f5f952f4936b3b14e155855b1b32549514337c29b43ac98a64879e",
+        "source": "training/rl1000_futoshiki5_balanced_baseline_extend100to350_b128_8k_20261012/data/train.jsonl",
+        "source_rows": [
+          0,
+          44800
+        ]
+      }
+    },
+    "specialist_easy": {
+      "calibration": {
+        "file": "mixed5_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "61af5def06baddcb66637b5aaa0087c7fe32d041183bc1fc8020a9913657803b",
+        "gzip_sha256": "af9640437c1d2cce8b7a2bbeb68eb5dc457949f96481c4428ad02f69480df4e9",
+        "source": "training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "expert": {
+        "file": "specialist_easy_expert.jsonl.gz",
+        "rows": 128,
+        "sha256": "197e76aabe6144ce2671477cee3250a81a769b2e7328264d0f7792278366e076",
+        "gzip_sha256": "53b4a3ceb74f65458bfc56b99c0c6107ab9f83eee1ee3b5038fb9854341e5a81",
+        "source": "training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/data/expert.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "mixed5_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "1124786d1b7e2c2d06d615039ea5e35a20002d682db367a57046c86bb5ffea29",
+        "gzip_sha256": "d80f5ab2b6f7b0b856a6fa45dc0854fc1bc243608a339caf9b51d623e324ac48",
+        "source": "training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "specialist_easy_train.jsonl.gz",
+        "rows": 32000,
+        "sha256": "d5e65abfd47a6fb510a646afc86e74bb31b7d60ff224a53a9c2c018257712c77",
+        "gzip_sha256": "f3f09dc178d992e370424b76c14e88b588a347b2b993a1d6fab9ce79d702b007",
+        "source": "training/futoshiki5_g11i5_expert_from250_flash20_b128_8k_20261013/extensions/updates_100_to_250/train_to250.jsonl",
+        "source_rows": [
+          0,
+          32000
+        ]
+      }
+    },
+    "specialist_tier2": {
+      "calibration": {
+        "file": "mixed5_calibration.jsonl.gz",
+        "rows": 128,
+        "sha256": "61af5def06baddcb66637b5aaa0087c7fe32d041183bc1fc8020a9913657803b",
+        "gzip_sha256": "af9640437c1d2cce8b7a2bbeb68eb5dc457949f96481c4428ad02f69480df4e9",
+        "source": "training/futoshiki5_g9i5_expert_from75_flash100_b128_8k_20261014/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "expert": {
+        "file": "specialist_tier2_expert.jsonl.gz",
+        "rows": 128,
+        "sha256": "b7b1585230517ef0575e3f22b8c0a13b28b00b72c33c644087a47fcdc21402b0",
+        "gzip_sha256": "eefcee036c525f28a67d9568b90e56606ab9732a9fc2135bce917edde8ac1dc8",
+        "source": "training/futoshiki5_g9i5_expert_from75_flash100_b128_8k_20261014/data/expert.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/futoshiki5_g9i5_expert_from75_flash100_b128_8k_20261014/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "mixed5_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "1124786d1b7e2c2d06d615039ea5e35a20002d682db367a57046c86bb5ffea29",
+        "gzip_sha256": "d80f5ab2b6f7b0b856a6fa45dc0854fc1bc243608a339caf9b51d623e324ac48",
+        "source": "training/futoshiki5_g9i5_expert_from75_flash100_b128_8k_20261014/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "specialist_tier2_train.jsonl.gz",
+        "rows": 12800,
+        "sha256": "56ea7b7646b8371004de0246df64e4de80ac3383c913c073167b3e1f125641d9",
+        "gzip_sha256": "18426e6817e381f9bf397e9e3b00de95ff51ff768fe01712f9bcc7bedd64b505",
+        "source": "training/futoshiki5_g9i5_expert_from75_flash100_b128_8k_20261014/data/train.jsonl",
+        "source_rows": [
+          0,
+          12800
+        ]
+      }
+    },
+    "tier2": {
+      "calibration": {
+        "file": "tier2_calibration.jsonl.gz",
+        "rows": 64,
+        "sha256": "ef9427abe404523d3263759bb4a4d96323678b22e7fab2abf2baca2c430a210e",
+        "gzip_sha256": "588df346d0ec44bf297e44f90d5d8b84162f5a5a0c37ed72da1ef1b026cfaa40",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "expert": {
+        "file": "tier2_expert.jsonl.gz",
+        "rows": 256,
+        "sha256": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+        "gzip_sha256": "a246d84c227d6edb06ec5b3dcf62d435cb9960f334e244787de7ac42325aee4c",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/expert.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "next": {
+        "file": "tier2_next.jsonl.gz",
+        "rows": 256,
+        "sha256": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+        "gzip_sha256": "42bcf25ab0100e6750c1a1a4abb380aa5ffaa41e99166b2f5ee265786be0b07b",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/next.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "tier2_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca",
+        "gzip_sha256": "c99c2d4a2129bc70cde9554bac6f31e45a0eb5fe908d45299743b598eff58d1b",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "tier2_train.jsonl.gz",
+        "rows": 12800,
+        "sha256": "a97d18e2651db447a315ce74b8cf491c853367e8df8213ba1c372082f5c85482",
+        "gzip_sha256": "821843cf34e582021cf2a63311b58403c0ef9d24c2ed1e13ecea8fc7be715cd3",
+        "source": "training/futoshiki5_g9i5_flash_mis_sc_async100_from_projection_sft_epoch2_20261017_v3/data/train.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "tier3": {
+      "calibration": {
+        "file": "tier3_calibration.jsonl.gz",
+        "rows": 32,
+        "sha256": "18ccfd2733bf3c6a6d08f659e67a8c9f94f3621ee4db5b6836f1c11e58460d5b",
+        "gzip_sha256": "1f4143c80d2ce5627bfdb851d2452bdb8251f4c6b805c9e91fb9d84dcd14cdfb",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "expert": {
+        "file": "tier2_expert.jsonl.gz",
+        "rows": 256,
+        "sha256": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+        "gzip_sha256": "a246d84c227d6edb06ec5b3dcf62d435cb9960f334e244787de7ac42325aee4c",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/expert.jsonl",
+        "source_rows": "all"
+      },
+      "harder": {
+        "file": "tier3_harder.jsonl.gz",
+        "rows": 256,
+        "sha256": "8f7a0d868d0f488ec9b7e346b75e4014f9d9752d042e695d5fab4bbab6e1da54",
+        "gzip_sha256": "b6015c248349e8aed57f6e38ccf57e315d773900f88ed7b3246743d92c82ea4f",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/harder.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "next": {
+        "file": "tier2_next.jsonl.gz",
+        "rows": 256,
+        "sha256": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+        "gzip_sha256": "42bcf25ab0100e6750c1a1a4abb380aa5ffaa41e99166b2f5ee265786be0b07b",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/next.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "tier2_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca",
+        "gzip_sha256": "c99c2d4a2129bc70cde9554bac6f31e45a0eb5fe908d45299743b598eff58d1b",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "tier3_train.jsonl.gz",
+        "rows": 12800,
+        "sha256": "bb7cf2784f5b6f92d3bf754213e60dac4588457c012479742a2b50c6e1905d16",
+        "gzip_sha256": "62d97d9fec4735194e540e1ed8ec7e5ae38db1132a50f7f9f70b96b5897ff0d5",
+        "source": "training/futoshiki5_g8i7_continue100_flash_mis_sc_async_from_g9_expert100_20261017/data/train.jsonl",
+        "source_rows": "all"
+      }
+    },
+    "tier4": {
+      "calibration": {
+        "file": "tier4_calibration.jsonl.gz",
+        "rows": 32,
+        "sha256": "5bf8b274164fdd7d93f696e87bc0e20dc2e5c1d8945f313d6cb339c666f3e4ec",
+        "gzip_sha256": "510bda4a35074d378d2548459fc928f88bc0cd6d2f2889c1ec4dfcbc85473a47",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/calibration.jsonl",
+        "source_rows": "all"
+      },
+      "expert": {
+        "file": "tier2_expert.jsonl.gz",
+        "rows": 256,
+        "sha256": "ae59a466dd008287d8f67ba51fe301efc6f3b41493524214e4688a22f3536b65",
+        "gzip_sha256": "a246d84c227d6edb06ec5b3dcf62d435cb9960f334e244787de7ac42325aee4c",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/expert.jsonl",
+        "source_rows": "all"
+      },
+      "harder": {
+        "file": "tier3_harder.jsonl.gz",
+        "rows": 256,
+        "sha256": "8f7a0d868d0f488ec9b7e346b75e4014f9d9752d042e695d5fab4bbab6e1da54",
+        "gzip_sha256": "b6015c248349e8aed57f6e38ccf57e315d773900f88ed7b3246743d92c82ea4f",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/harder.jsonl",
+        "source_rows": "all"
+      },
+      "hardest": {
+        "file": "tier4_hardest.jsonl.gz",
+        "rows": 256,
+        "sha256": "a8ce20bcbb5071320ae579b3323008997ae6f2d67b7fe0788e838dd99931bc20",
+        "gzip_sha256": "25a4f8d19f7f99bcc9eef1b2fffe0b4976beceaa00d36aea2c28b1d618c8bcb2",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/hardest.jsonl",
+        "source_rows": "all"
+      },
+      "monitor": {
+        "file": "mixed5_monitor.jsonl.gz",
+        "rows": 32,
+        "sha256": "2bcc556907fc4d2788d16b1fd8f83b14d08c6d6770b90a4297d508866b22be62",
+        "gzip_sha256": "d2df781b5b8e62f996ead1c6b60eb2f34d4b74f230e94a93617925aa5613b65e",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/monitor.jsonl",
+        "source_rows": "all"
+      },
+      "next": {
+        "file": "tier2_next.jsonl.gz",
+        "rows": 256,
+        "sha256": "e173866b1ed8875ae9d3664c1b05dad1b27891d4f18d260b089593e95d25bbd5",
+        "gzip_sha256": "42bcf25ab0100e6750c1a1a4abb380aa5ffaa41e99166b2f5ee265786be0b07b",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/next.jsonl",
+        "source_rows": "all"
+      },
+      "test": {
+        "file": "tier2_test.jsonl.gz",
+        "rows": 128,
+        "sha256": "a0de722655373fcdba1248aa6909fb016bd0b71ec07f6a99c3bbbcbd98d10bca",
+        "gzip_sha256": "c99c2d4a2129bc70cde9554bac6f31e45a0eb5fe908d45299743b598eff58d1b",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/test.jsonl",
+        "source_rows": "all"
+      },
+      "train": {
+        "file": "tier4_train.jsonl.gz",
+        "rows": 12800,
+        "sha256": "1046530d6071965b6cef2439488df94a6f321c9a8b10c385c47c79e7c587315e",
+        "gzip_sha256": "90a444204d0dc88338f7983ad9a7a6be8eb66ec6d9c64e8b3fbadb2463519ec9",
+        "source": "training/futoshiki5_g6i8_continue100_flash_mis_sc_async_from_g8_expert100_20261017/data/train.jsonl",
+        "source_rows": "all"
+      }
+    }
+  }
+}

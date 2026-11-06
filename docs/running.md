@@ -9,14 +9,22 @@ with weights, config, and tokenizer. They neither download weights nor assume a
 SimplePT installation. CLI file arguments are relative to the shell's current
 directory.
 
-`configs/train_*.toml` contains ten standalone one-step wiring examples;
-`configs/eval_*.toml` covers all four environments; `configs/sft.toml` consumes
-verified projection output. Models can be Base, Instruct, or Thinking; choose
-chat templating and the thinking prefill to match that checkpoint's tokenizer.
-The examples append `<thinking>\n` and require a natural `</thinking>` close and
-an `<answer>...</answer>` result for strict puzzle formats. Ordinary chat and
-raw prompt modes remain available. Check the saved actual prompts before long
-runs, especially when changing a checkpoint's chat template.
+`configs/train_*.toml` provides standalone one-step examples for the ten training
+methods and optional CFOP adapter; `configs/eval_*.toml` covers every environment.
+`configs/sft.toml` consumes verified projection output. The
+[complete Futoshiki recipe](../examples/futoshiki_hill_climb/README.md) adds staged
+historical data replay and regeneration. The
+[Knights Value MIS+SC example](../examples/knights_value_mis_sc/README.md) adds the
+recent privileged-critic route with readiness warmup and exact continuation.
+Models can be Base, Instruct, or Thinking;
+choose chat templating and the prefill to match that checkpoint's tokenizer.
+
+Strict arithmetic and puzzle examples append `<thinking>\n`, require a natural
+`</thinking>` close, and finish with `<answer>...</answer>`. CFOP instead uses its
+[verified phase-program protocol](cfop.md), with no incompatible thinking prefill;
+its solver bindings are optional. Ordinary chat and raw prompt modes remain
+available. Check saved actual prompts before long runs, especially when changing
+a checkpoint's chat template.
 
 The small batches make configurations easy to inspect. They are not throughput
 recommendations. Resize them after measuring your GPU; do not carry a small
@@ -182,8 +190,7 @@ uv run pytest -q
 uv build
 ```
 
-The CPU CI workflow tests and builds; it does not train models, publish wheels,
-or create remote repositories. GPU tests skip when CUDA is unavailable. Artifacts,
+Run these checks locally. GPU tests skip when CUDA is unavailable. Artifacts,
 weights, logs, credentials and caches are ignored. Keep a copy of actual evaluation
 traces with each experiment. Source provenance and validation limitations live in
 `docs/porting/`; this code has no runtime import from the original SimplePT tree.
