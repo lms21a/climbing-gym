@@ -8,5 +8,5 @@
 - Preserve LFM 2.5 1.2B support, thinking tags, ordinary chat templates, rollout log probabilities, and memory/offload behavior.
 - Before any model training/evaluation, validate inference batch/concurrency limits and benchmark representative native rollouts with the intended token budget and log probabilities; compare throughput and peak GPU memory with relevant prior benchmarks. Record throughput and full-step timing after launch. Speed guards are only for initial setup, never for stopping training during fluctuations.
 - Every model evaluation must save actual prompts, complete responses, expected answers, and outcomes in a Markdown trace report, spanning available difficulty tiers and successes/failures.
-- New training runs log online to W&B `lukas928/simple-pt`, and keep local metrics/checkpoints. No stronger-model distillation.
+- New training runs log online to W&B project `climbing-gym` under the current W&B account (set an explicit entity only when needed), and keep local metrics/checkpoints. No stronger-model distillation.
 - Agents share this checkout. Respect file ownership in `docs/porting/coordination.md`; do not commit other agents' unfinished files. Report source paths and commits in your porting note.

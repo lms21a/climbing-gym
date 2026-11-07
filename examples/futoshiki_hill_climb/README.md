@@ -142,7 +142,7 @@ The final stage improved its hardest target while losing some earlier-tier perfo
 
 ## Outputs and inspection
 
-Keep each stage's policy, optimizer/RNG/cursor checkpoint, resolved config, dataset hashes, local metrics, native rollout log probabilities, and timing logs. New training runs log online to W&B `lukas928/simple-pt`; authenticate before launching. Every evaluation saves a Markdown report containing actual prompts, complete responses, expected assignments, and outcomes.
+Keep each stage's policy, optimizer/RNG/cursor checkpoint, resolved config, dataset hashes, local metrics, native rollout log probabilities, and timing logs. New training runs log online to W&B project `climbing-gym` under the current W&B account (optional entity override); authenticate before launching. Every evaluation saves a Markdown report containing actual prompts, complete responses, expected assignments, and outcomes.
 
 Run native setup validation before each stage on the actual checkpoint, intended prompt lengths, token budget, and probability metadata. Inspect batch size, all request/concurrency limits, tokens/second, and peak GPU memory, comparing a relevant prior report. A prior stage with a different workload is context rather than an interchangeable speed baseline. Training retains rollout and full-step timings; throughput fluctuations do not trigger automatic probes or stops.
 

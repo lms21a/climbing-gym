@@ -144,8 +144,7 @@ def config_for(root, stage_id):
         ),
         wandb=dict(
             enabled=True,
-            entity="lukas928",
-            project="simple-pt",
+            project="climbing-gym",
             mode="online",
             dir="logs",
             run_name="futoshiki-hill-" + stage_id,

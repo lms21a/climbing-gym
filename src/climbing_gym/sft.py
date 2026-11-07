@@ -465,8 +465,8 @@ def _make_sft_config(config_path: Path, payload: Mapping[str, Any]) -> SFTConfig
         wandb=WandbConfig(
             dir=_resolve_path(wandb_table.get("dir"), base_dir=config_path.parent),
             enabled=bool(wandb_table.get("enabled", True)),
-            project=str(wandb_table.get("project", "simple-pt") or "simple-pt"),
-            entity=str(wandb_table.get("entity", "lukas928") or "lukas928"),
+            project=str(wandb_table.get("project", "climbing-gym") or "climbing-gym"),
+            entity=str(wandb_table.get("entity", "") or "").strip() or None,
             run_name=str(wandb_table.get("run_name", "") or "").strip() or None,
             mode=str(wandb_table.get("mode", "online") or "online").strip(),
         ),

@@ -150,6 +150,5 @@ max_traces = 12
 [wandb]
 enabled = true
 mode = "online"
-entity = "lukas928"
-project = "simple-pt"
+project = "climbing-gym"
 run_name = "knights-value-mis-sc-smoke"

@@ -82,6 +82,5 @@ metrics_path = "../runs/mis_ppo/training_metrics.jsonl"
 [wandb]
 enabled = true
 mode = "online"
-entity = "lukas928"
-project = "simple-pt"
+project = "climbing-gym"
 run_name = "mis_ppo-smoke"

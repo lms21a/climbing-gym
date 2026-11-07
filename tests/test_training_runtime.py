@@ -227,7 +227,12 @@ def test_ppo_cpu_state_builder_obeys_bounded_workspace():
         assert optimizer.chunk_elements == 85 and optimizer.workspace_bytes == 1020
 
 
-def test_portable_paths_and_online_wandb_defaults(tmp_path, monkeypatch):
+@pytest.mark.parametrize('wandb_settings,expected_entity,expected_project', [
+    ('', None, 'climbing-gym'),
+    ("[wandb]\nentity='   '\nproject=''\n", None, 'climbing-gym'),
+    ("[wandb]\nentity='example-team'\nproject='custom-project'\n", 'example-team', 'custom-project'),
+])
+def test_portable_paths_and_online_wandb_defaults(tmp_path, monkeypatch, wandb_settings, expected_entity, expected_project):
     location = tmp_path/'configs'
     location.mkdir()
     path = location/'run.toml'
@@ -244,7 +249,7 @@ preflight_report_path='../reports/native.json'
 use_dynamic_sampling=false
 [checkpoint]
 root_dir='../checkpoints'
-''')
+''' + wandb_settings)
     monkeypatch.chdir(tmp_path)
     cfg = ConfigManager.from_toml(path).config
     assert cfg.model.path == str(tmp_path/'weights')
@@ -252,7 +257,7 @@ root_dir='../checkpoints'
     assert cfg.checkpoint.root_dir == str(tmp_path/'checkpoints')
     assert cfg.inference.preflight_report_path == str(tmp_path/'reports/native.json')
     assert cfg.wandb.enabled and cfg.wandb.mode == 'online'
-    assert cfg.wandb.project == 'simple-pt' and cfg.wandb.entity == 'lukas928'
+    assert cfg.wandb.project == expected_project and cfg.wandb.entity == expected_entity
     assert cfg.inference.backend == 'lfm25_native'
     assert type(cfg.env.build()).__name__ == 'MathQAEnv'
     with pytest.raises(ValueError, match='Unsupported'):

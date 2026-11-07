@@ -46,7 +46,7 @@ The CLI checks that a saved preflight's model path, row hash, native execution s
 
 ## SFT behavior and evaluation
 
-`python -m climbing_gym.sft CONFIG.toml` retains source chat templating, response-only token masks, optional full-document loss, packed token-count-weighted accumulation, optimizer step logging, native-model checkpoint export and TOML loading. File paths resolve relative to the config file. New runs default to online W&B `lukas928/simple-pt` and always retain local resolved configuration/metrics via the shared logger.
+`python -m climbing_gym.sft CONFIG.toml` retains source chat templating, response-only token masks, optional full-document loss, packed token-count-weighted accumulation, optimizer step logging, native-model checkpoint export and TOML loading. File paths resolve relative to the config file. New runs default to online W&B project `climbing-gym` under the current W&B account (with an optional entity override) and always retain local resolved configuration/metrics via the shared logger.
 
 The original ordinary `<think>` format remains the default. Set `sft.thinking_tag = "thinking"` for the LFM `<thinking>...</thinking><answer>...</answer>` projection contract. The focused formatting helpers preserve both tag families. Ordinary tokenizer chat templates remain available via `sft.apply_chat_template`; projection records already contain fully rendered prompts and must not be templated again.
 

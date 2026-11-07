@@ -81,6 +81,5 @@ metrics_path = "../runs/flashreinforce/training_metrics.jsonl"
 [wandb]
 enabled = true
 mode = "online"
-entity = "lukas928"
-project = "simple-pt"
+project = "climbing-gym"
 run_name = "flashreinforce-smoke"

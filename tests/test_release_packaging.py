@@ -54,6 +54,7 @@ def test_all_training_examples_validate_without_weights(path, tmp_path, monkeypa
     assert config.policy_optimizer.type == "cpu_master_adamw"
     assert config.trainer.optimizer_workspace_bytes == 48 * 1024**2
     assert config.wandb.enabled and config.wandb.mode == "online"
+    assert config.wandb.project == "climbing-gym" and config.wandb.entity is None
     assert config.inference.sampling.max_tokens == 4096
     assert config.inference.sampling.logprobs == 1
     assert resolve_limits(config.inference, config.rollout)["representative_batch_size"] >= 2
@@ -84,15 +85,26 @@ def test_all_evaluation_examples_parse_without_weights(path, tmp_path, monkeypat
     assert not run.rollout_coordinator.config.resolved_runner().use_dynamic_sampling
 
 
-def test_sft_example_and_wandb_path_resolution(tmp_path, monkeypatch):
+@pytest.mark.parametrize("entity,project", [
+    (None, None), ("   ", ""), ("example-team", "custom-project"),
+])
+def test_sft_example_and_wandb_path_resolution(tmp_path, monkeypatch, entity, project):
     from climbing_gym.sft import _make_sft_config
     monkeypatch.setenv("CLIMBING_GYM_MODEL", str(tmp_path / "model"))
     monkeypatch.setenv("PACKAGE_TEST_LOGS", "relative-logs")
     path = ROOT / "configs/sft.toml"
     payload = tomllib.loads(path.read_text())
+    assert "entity" not in payload["wandb"]
+    assert payload["wandb"].pop("project") == "climbing-gym"
+    if project is not None:
+        payload["wandb"]["project"] = project
+    if entity is not None:
+        payload["wandb"]["entity"] = entity
     payload["wandb"]["dir"] = "${PACKAGE_TEST_LOGS}/sft"
     config = _make_sft_config(path, payload)
     assert config.wandb.dir == str(path.parent / "relative-logs/sft")
+    assert config.wandb.project == (project or "climbing-gym")
+    assert config.wandb.entity == ((entity or "").strip() or None)
     assert config.sft.thinking_tag == "thinking"
     assert not config.sft.apply_chat_template
     assert config.data.dataset_path == str(ROOT / "runs/projection/projected_train.jsonl")

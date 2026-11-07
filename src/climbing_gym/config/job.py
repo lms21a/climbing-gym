@@ -347,8 +347,8 @@ class PPOTrainer:
 @dataclass(frozen=True, slots=True)
 class Wandb:
     enabled: bool = True
-    project: str = "simple-pt"
-    entity: str | None = "lukas928"
+    project: str = "climbing-gym"
+    entity: str | None = None
     dir: str = ""
     run_name: str | None = None
     mode: str | None = "online"

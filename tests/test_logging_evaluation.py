@@ -53,17 +53,22 @@ def test_reused_directory_preserves_every_runs_configuration(tmp_path):
     assert json.loads(second.config_path.read_text())["config"]["seed"] == 2
 
 
-def test_online_uses_owned_run_full_configuration_and_finish(tmp_path, monkeypatch):
+@pytest.mark.parametrize("entity", [None, "", "example-team"])
+def test_online_uses_owned_run_full_configuration_and_finish(tmp_path, monkeypatch, entity):
     calls = []
     run = SimpleNamespace(log=lambda payload, **kw: calls.append((payload, kw)), finish=lambda **kw: calls.append(("finish", kw)))
     def init(**kwargs):
         calls.append(kwargs)
         return run
     monkeypatch.setattr("climbing_gym.trainers.logger.importlib.import_module", lambda name: SimpleNamespace(init=init))
-    with WandbLogger(Wandb(dir=str(tmp_path)), config_path=tmp_path / "job.toml", resolved_config={"model": {"path": "/model"}, "trainer": {"steps": 3}}) as logger:
+    with WandbLogger(Wandb(dir=str(tmp_path), entity=entity), config_path=tmp_path / "job.toml", resolved_config={"model": {"path": "/model"}, "trainer": {"steps": 3}}) as logger:
         logger.log_step(step=1, metrics={"timing/full_step_seconds": 4.5})
     assert calls[0]["mode"] == "online"
-    assert calls[0]["entity"] == "lukas928" and calls[0]["project"] == "simple-pt"
+    assert calls[0]["project"] == "climbing-gym"
+    if entity:
+        assert calls[0]["entity"] == entity
+    else:
+        assert "entity" not in calls[0]
     assert calls[0]["config"]["trainer"] == {"steps": 3}
     assert calls[-1] == ("finish", {"exit_code": 0})
 

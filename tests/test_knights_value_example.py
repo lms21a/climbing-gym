@@ -59,7 +59,8 @@ def test_standalone_preparation_verifies_exact_data_and_production_contract(
     assert not cfg.inference.chat_template_enable_thinking
     assert cfg.inference.assistant_prefill == "<thinking>\n"
     assert manifest["historical_initialization_verified"] is False
-    assert cfg.wandb.mode == "online" and cfg.wandb.project == "simple-pt"
+    assert cfg.wandb.mode == "online" and cfg.wandb.project == "climbing-gym"
+    assert cfg.wandb.entity is None
     if profile == "production":
         assert cfg.trainer.num_steps == 300
         assert (

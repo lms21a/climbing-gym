@@ -37,7 +37,7 @@ Generic partial groups are never silently represented by a cursor alone: saving 
 
 ## Run records and preflight
 
-All TOML file paths are expanded and resolved relative to the config file's directory (standalone helper calls default to cwd). W&B defaults are enabled, online, entity `lukas928`, project `simple-pt`. Full resolved config, validated training/evaluation benchmark metadata, local metrics, training trajectories, and checkpoints remain available locally. The logger/evaluation agent owns those facilities.
+All TOML file paths are expanded and resolved relative to the config file's directory (standalone helper calls default to cwd). W&B defaults are enabled and online, using project `climbing-gym` under the current W&B account; an explicit entity is optional. Full resolved config, validated training/evaluation benchmark metadata, local metrics, training trajectories, and checkpoints remain available locally. The logger/evaluation agent owns those facilities.
 
 Before model loading, training validates a saved representative native benchmark using the intended output budget, sampled log probabilities, effective native batch size, request caps, throughput, peak memory, and any prior comparison. `[inference] preflight_report_path`/`preflight_prior_report_path` configure training evidence. Periodic evaluation is validated once at setup against its actual coordinator limits; `[eval]` can override those report paths when its budget differs. No live speed probes or automatic throughput stops run during training. Each step records rollout tokens/second and full-step timing. Evaluation trace paths/max samples are available through `[eval.logging] trace_path` and `max_traces`; evaluator writes complete actual responses separately.
 

@@ -73,11 +73,15 @@ class WandbLogger:
         self._metrics = self.metrics_path.open("a", encoding="utf-8")
         if not bool(getattr(config, "enabled", True)) or mode == "disabled":
             return
+        entity = str(getattr(config, "entity", None) or "").strip()
+        run_target = f"{entity}/{config.project}" if entity else str(config.project)
         try:
             wandb = importlib.import_module("wandb")
-            init_kwargs = {"project": str(config.project), "entity": getattr(config, "entity", None),
+            init_kwargs = {"project": str(config.project),
                            "config": {"config_path": str(path), **configuration},
                            "dir": str(self.log_dir), "mode": mode}
+            if entity:
+                init_kwargs["entity"] = entity
             if getattr(config, "run_name", None):
                 init_kwargs["name"] = str(config.run_name)
             self._run = wandb.init(**init_kwargs)
@@ -87,7 +91,7 @@ class WandbLogger:
             self._metrics.close()
             self._closed = True
             raise RuntimeError(
-                f"Could not start W&B {mode} run for {getattr(config, 'entity', None)}/{config.project}: {exc}. "
+                f"Could not start W&B {mode} run for {run_target}: {exc}. "
                 "Install the wandb extra and authenticate for online logging, or explicitly set "
                 "wandb.mode='offline' / wandb.enabled=false. "
                 f"Resolved configuration is saved at {self.config_path}."

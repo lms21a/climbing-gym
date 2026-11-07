@@ -147,8 +147,8 @@ def test_historical_data_prepare_uses_real_rows_and_native_portable_config(tmp_p
     assert cfg.model.path == str(tmp_path / "student")
     assert (
         cfg.wandb.enabled
-        and cfg.wandb.project == "simple-pt"
-        and cfg.wandb.entity == "lukas928"
+        and cfg.wandb.project == "climbing-gym"
+        and cfg.wandb.entity is None
     )
     assert (
         Env(name="futoshiki", reward="exact_match_strict").build().reward_profile

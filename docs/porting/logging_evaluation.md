@@ -13,7 +13,8 @@ actual training, GPU inference, or real W&B run was performed by this agent.
 `WandbLogger(config, *, config_path: Path, resolved_config=None)` preserves the
 trainer interface `log_step(step=..., metrics=...)` / `close()`. Runtime passes
 its fully resolved configuration, including preflight measurements. W&B defaults
-are online `lukas928/simple-pt`, configured by the shared `Wandb` dataclass.
+are online project `climbing-gym` under the current W&B account, configured
+by the shared `Wandb` dataclass. Entity is omitted unless explicitly configured.
 An owned W&B Run receives initialization/configuration, training metrics and
 periodic `eval/*` metrics. Run methods rather than process-global W&B methods
 prevent one logger from finishing another run. `close(exit_code=...)` is

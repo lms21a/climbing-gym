@@ -31,8 +31,7 @@ save_final = true
 [wandb]
 enabled = true
 mode = "online"
-entity = "lukas928"
-project = "simple-pt"
+project = "climbing-gym"
 run_name = "projection-sft"
 
 # Optional periodic evaluation; prepare this config's native preflight first.

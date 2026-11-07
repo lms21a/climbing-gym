@@ -113,10 +113,12 @@ FP32 state.
 
 ## Logging and evaluation
 
-Training defaults to online W&B, entity `lukas928`, project `simple-pt`, including
-configuration, step metrics, and periodic evaluations. `wandb` is a base dependency,
-so the default install supports this behavior. Authenticate before launch. For your
-own account change `[wandb] entity`/`project`. For a deliberately local run, set
+Training defaults to online W&B project `climbing-gym` under the current W&B
+account, including configuration, step metrics, and periodic evaluations. `wandb`
+is a base dependency, so the default install supports this behavior. Authenticate
+before launch. Leave `[wandb] entity` unset to use your configured/default W&B
+account, or set it explicitly to target a team or another entity. `[wandb] project`
+can also be overridden. For a deliberately local run, set
 `enabled=false`; `mode="offline"` explicitly selects SDK offline logging. Online
 initialization failures are actionable errors, not silent local fallback.
 

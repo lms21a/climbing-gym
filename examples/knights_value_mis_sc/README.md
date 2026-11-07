@@ -17,7 +17,7 @@ The archived run completed **300 actor updates after 22 critic-only warmup batch
 | Critic | Independent cloned backbone; embeddings and token mixers frozen; feed-forward layers, FFN norms and FP32 scalar head trainable; arctangent output in [0,1], head initialization std `1/(hidden_size+1)` |
 | Targets | Gamma 1, raw Monte Carlo outcomes at every pre-action state; length-adaptive policy GAE alpha 0.4; no stronger teacher; verified reference answer appears only in the critic prompt |
 | Critic fitting | Two epochs per collection; learning rate 5e-6; gradient clip 10; exact FP32 Adam masters/moments, local mmap backing, bounded GPU staging; actor optimizer likewise keeps exact FP32 state on the host |
-| Monitoring | Online W&B `lukas928/simple-pt`, local metrics and complete rollout text; dev evaluation every 10 actor updates; full actor/critic/dataset/RNG checkpoints every 10 updates |
+| Monitoring | Online W&B project `climbing-gym` under the current W&B account (optional entity override), local metrics and complete rollout text; dev evaluation every 10 actor updates; full actor/critic/dataset/RNG checkpoints every 10 updates |
 
 Capped responses stay in training. The 4,096-token cap is the task horizon: incomplete answers receive the verifier's terminal outcome, with zero terminal bootstrap. Sparse score centering corrects the recorded sampling distribution; it does not insert a second PPO importance ratio.
 
