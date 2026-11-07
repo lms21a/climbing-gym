@@ -1,22 +1,18 @@
-# Migration coordination
+# Source provenance
 
-Destination: `/home/lukas928/ClimbingGym/climbing-gym`. Distribution `climbing-gym`; Python package `climbing_gym`.
+Climbing Gym brings Lukas's SimplePT implementations into a standalone MIT-licensed package. Source revisions, selected checkpoint identities, and data hashes are retained so the algorithms and example recipes can be traced to their original implementations.
 
-Release license: MIT, explicitly selected by the user during the migration. Preserve existing source attribution; model weights retain their own licenses and are not included.
+| Area | Source and implementation notes |
+| --- | --- |
+| Native inference and model kernels | [Native engine](native_engine.md), [source manifest](native_source_manifest.json) |
+| Policy and value objectives | [Algorithm provenance](rl_algorithms.md), [training runtime](training_runtime.md) |
+| Environments and collection | [Environment provenance](environments_rollouts.md), [CFOP recovery metadata](cfop.json) |
+| SFT and projection | [SFT/projection](sft_projection.md), [historical Futoshiki projector](futoshiki_example_projection.md) |
+| Reproducible climbs | [Futoshiki runtime](futoshiki_example_runtime.md), [Knights value method](knights_value_method.md) |
+| Logging and evaluation | [Logging and trace contracts](logging_evaluation.md) |
 
-Repository visibility: the user subsequently authorized creating and pushing the private `lms21a/climbing-gym` repository. Continue pushing reviewed changes there; keep it private until the user explicitly requests a public release.
+Named source checkouts and historical artifact paths identify archived inputs; they are not runtime dependencies. Paths are relative to the original workspace, with machine-specific prefixes omitted. Commands in historical reports use portable `uv` equivalents of the migration environment's commands. Source and ported SHA256 fields in the native manifest describe the initial migration snapshot; subsequent fixes are recorded in Git history. Some original source commits and experiment archives are not publicly hosted.
 
-Baseline candidates are `/home/lukas928/SimplePT/simple-pt-memory-defaults` (recent memory defaults), `simple-pt-knights-value-mis-sc` (value/MIS/score centering), plus targeted worktrees discovered with `git worktree list` and path history. Source trees remain read-only. Port real implementations with renamed imports and no dependency on SimplePT checkout paths. Prefer focused modules with concise public entry points over copying historical scripts wholesale. Preserve useful comments and attribution.
+Historical verification is recorded in the [native checkpoint and throughput report](release_verification.md), [follow-up review](followup_verification.md), and [package verification](followup_packaging.md). Files named under `artifacts/` in those reports are local QA outputs and are excluded from Git and distributions. The committed reports retain the measurements and reproduction commands; the examples include their data manifests and [complete recorded projection samples](../../examples/futoshiki_hill_climb/recorded_projection_samples.md).
 
-Eight Sol-agent assignments, scheduled in waves because three worker slots are available:
-
-1. Native inference and models: owns `src/climbing_gym/inference/`, `models/`, and related tests.
-2. Environments and rollouts: owns `src/climbing_gym/envs/`, `rollout/`, and related tests. GSM8K, Countdown, Knights and Knaves, Futoshiki, and the subsequently requested optional CFOP Solver integration.
-3. RL algorithms: owns algorithm modules (CISPO, FlashREINFORCE, PPO, MISPO, score centering and value support), and related tests.
-4. Training integration and offload: owns shared training/runtime/configuration/data modules and trainer integration. Coordinate changes to algorithm modules.
-5. SFT and projection/MCMC: owns SFT/sampling implementation and related tests/examples.
-6. W&B and local logging: owns logging, evaluation trace/report helpers, logging integration/tests.
-7. Release packaging and documentation: owns package metadata, CLI, README, configuration examples, user docs, package root. GitHub workflows were removed at the user's request.
-8. Independent compatibility/release verification: checks algorithm parity, imports, CPU suite, native LFM integration; owns verification reports and any agreed integration fixes.
-
-Keep top-level algorithm module names initially if this preserves implementation clearly. Shared lower-level modules should retain the original relative layout when useful. Communicate cross-area dependencies rather than copying another owner's files. Avoid importing unsupported environments merely for registry completeness. Parent coordinates architectural decisions and integration.
+Model weights remain external. Bundled data retain their source attribution and licenses; see the [puzzle bank source notice](../../examples/futoshiki_hill_climb/data/SOURCES.md).

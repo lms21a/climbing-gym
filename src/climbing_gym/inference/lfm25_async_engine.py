@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import gc
 import math
 import threading
 import uuid
@@ -71,21 +72,7 @@ class LFM25AsyncInferenceEngine:
             device="cuda" if torch.cuda.is_available() else "cpu",
             max_model_len=config.max_model_len,
         )
-        if cuda_graphs:
-            operator_options = {}
-            if fp8_operators:
-                from climbing_gym.inference.lfm3_engine import LFM3Engine
-
-                if not isinstance(self._engine, LFM3Engine):
-                    raise ValueError("FP8 operator projections currently require LFM3")
-                operator_options["fp8_operators"] = True
-            self._engine.enable_cuda_graphs(bf16_weight_packing=bf16_weight_packing,
-                                           max_graphs=max_cuda_graphs, max_prefill_tokens=max_prefill_tokens,
-                                           fp8_mlp=fp8_mlp, fp8_kv=fp8_kv,
-                                           adaptive_batching=adaptive_batching, fp8_lm_head=fp8_lm_head,
-                                           **operator_options)
-        elif compile_decode and self._engine.device.type == "cuda":
-            self._engine.compile_decode()
+        self._owns_engine = True
         self._pending: list[_QueuedRequest] = []
         self._pending_lock: asyncio.Lock | None = None
         self._flush_task: asyncio.Task[None] | None = None
@@ -93,6 +80,28 @@ class LFM25AsyncInferenceEngine:
         self._engine_lock = threading.Lock()
         self._seed_lock = threading.Lock()
         self._generation_index = 0
+        try:
+            if cuda_graphs:
+                operator_options = {}
+                if fp8_operators:
+                    from climbing_gym.inference.lfm3_engine import LFM3Engine
+
+                    if not isinstance(self._engine, LFM3Engine):
+                        raise ValueError("FP8 operator projections currently require LFM3")
+                    operator_options["fp8_operators"] = True
+                self._engine.enable_cuda_graphs(bf16_weight_packing=bf16_weight_packing,
+                                               max_graphs=max_cuda_graphs, max_prefill_tokens=max_prefill_tokens,
+                                               fp8_mlp=fp8_mlp, fp8_kv=fp8_kv,
+                                               adaptive_batching=adaptive_batching, fp8_lm_head=fp8_lm_head,
+                                               **operator_options)
+            elif compile_decode and self._engine.device.type == "cuda":
+                self._engine.compile_decode()
+        except BaseException as error:
+            try:
+                self.close()
+            except BaseException as cleanup:
+                error.add_note(f"Native setup cleanup also failed: {cleanup}")
+            raise
 
     @classmethod
     def from_components(
@@ -110,6 +119,7 @@ class LFM25AsyncInferenceEngine:
         self.max_batch_size = _resolve_max_batch_size(self.config, max_batch_size)
         self.tokenizer = tokenizer
         self._engine = engine
+        self._owns_engine = False
         self._pending = []
         self._pending_lock = None
         self._flush_task = None
@@ -121,6 +131,8 @@ class LFM25AsyncInferenceEngine:
 
     @property
     def raw_engine(self) -> LFM25Engine:
+        if self._engine is None:
+            raise RuntimeError("LFM25AsyncInferenceEngine is closed")
         return self._engine
 
     def supports_token_prompt_bridge(self) -> bool:
@@ -184,17 +196,41 @@ class LFM25AsyncInferenceEngine:
                 f"Timed out after {timeout:g}s waiting for native LFM2.5 generation to drain"
             )
         try:
+            if self._closed:
+                raise RuntimeError("LFM25AsyncInferenceEngine is closed")
             return self._engine.sync_from_model(model, drain_timeout=drain_timeout)
         finally:
             self._engine_lock.release()
 
     def close(self) -> None:
+        """Drain workers and retire this adapter's native references.
+
+        Engines supplied with from_components remain caller-owned. An engine
+        loaded by this adapter releases its buffers, and unreachable decoder /
+        compiled-callable cycles are collected before another actor is loaded.
+        """
         self._closed = True
         pending = list(self._pending)
         self._pending.clear()
         for request in pending:
             if not request.future.done():
                 request.future.cancel()
+        with self._engine_lock:
+            engine = self._engine
+            if engine is None:
+                return
+            owned = self._owns_engine
+            device = getattr(engine, "device", None)
+            if owned:
+                engine.release_inference_buffers()
+            self._engine = None
+            if hasattr(self, "_stop_tables"):
+                self._stop_tables.clear()
+        del engine
+        if owned:
+            gc.collect()
+            if device is not None and device.type == "cuda":
+                torch.cuda.empty_cache()
 
     async def generate(
         self,
@@ -396,7 +432,8 @@ class LFM25AsyncInferenceEngine:
     def release_inference_buffers(self) -> None:
         """Drain native execution before freeing caches used by its CUDA graphs."""
         with self._engine_lock:
-            self._engine.release_inference_buffers()
+            if self._engine is not None:
+                self._engine.release_inference_buffers()
 
     def sleep(self, *, level: int = 1, mode: str = "abort") -> None:
         del level, mode
@@ -413,6 +450,8 @@ class LFM25AsyncInferenceEngine:
     async def _enqueue(self, request: _QueuedRequest) -> None:
         lock = self._lock()
         async with lock:
+            if self._closed:
+                raise RuntimeError("LFM25AsyncInferenceEngine is closed")
             self._pending.append(request)
             if self._flush_task is None or self._flush_task.done():
                 self._flush_task = asyncio.create_task(self._flush_pending())
@@ -455,6 +494,8 @@ class LFM25AsyncInferenceEngine:
         encoded = [list(request.prompt_token_ids) for request in batch]
         sampling = batch[0].sampling
         with self._engine_lock:
+            if self._closed:
+                raise RuntimeError("LFM25AsyncInferenceEngine is closed")
             native_sampling = self._native_sampling(sampling, self._next_generation_seed())
             flat, cu, max_len = flatten_token_batches(encoded, device=self._engine.device)
             output = self._engine.generate(
@@ -537,6 +578,8 @@ class LFM25AsyncInferenceEngine:
             return self.config.default_sampling
         if isinstance(sampling, SamplingConfig):
             return sampling
+        if isinstance(sampling, Mapping):
+            raise TypeError("sampling must be a SamplingConfig or a sampling-attribute object, not a mapping")
         return SamplingConfig(
             temperature=float(getattr(sampling, "temperature", 0.0)),
             top_k=int(getattr(sampling, "top_k", -1)),
@@ -544,6 +587,8 @@ class LFM25AsyncInferenceEngine:
             max_tokens=int(getattr(sampling, "max_tokens", getattr(sampling, "max_new_tokens", 256))),
             n=int(getattr(sampling, "n", 1)),
             logprobs=getattr(sampling, "logprobs", None),
+            stop=getattr(sampling, "stop", ()) or (),
+            extra_params=getattr(sampling, "extra_params", {}) or {},
         )
 
     def _resolve_prompt(

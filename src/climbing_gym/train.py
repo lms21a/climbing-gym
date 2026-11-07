@@ -51,6 +51,15 @@ def validate_config(config: PPOConfig) -> None:
         raise ValueError("num_steps must be nonnegative and packing budget positive")
     if trainer.policy_epochs <= 0 or trainer.value_epochs <= 0:
         raise ValueError("Policy and critic epochs must be positive")
+    limits = ["policy_max_grad_norm"]
+    if algorithm in {"ppo", "value_mis_sc"} or (algorithm == "mis_ppo" and trainer.mis_use_value):
+        limits.append("value_max_grad_norm")
+    for name in limits:
+        value = getattr(trainer, name)
+        if not math.isfinite(value):
+            raise ValueError(f"{name} must be finite")
+        if algorithm in {"mis_ppo", "value_mis_sc"} and value <= 0:
+            raise ValueError(f"{name} must be positive for {algorithm}")
     from .value_warmup import validate_config as validate_warmup
     validate_warmup(config)
     from .training_memory import optimizer_chunk_elements
@@ -75,6 +84,12 @@ def validate_config(config: PPOConfig) -> None:
     if algorithm == "ppo":
         if trainer.advantage_estimator not in {"gae", "grpo"}:
             raise ValueError("PPO uses GAE; choose advantage_estimator='gae' ('grpo' remains a historical alias)")
+        if trainer.privileged_critic:
+            raise ValueError("PPO uses an ordinary critic; privileged_critic is supported by value_mis_sc instead")
+        if trainer.loss_aggregation != "token_mean":
+            raise ValueError("PPO supports loss_aggregation='token_mean' only")
+        if trainer.clip_epsilon_high is not None and trainer.clip_epsilon_high != trainer.clip_epsilon:
+            raise ValueError("PPO uses symmetric clipping; omit clip_epsilon_high or set it equal to clip_epsilon")
         return
     if algorithm == "grpo":
         if trainer.advantage_estimator not in {"grpo", "sa_mrpo"}:

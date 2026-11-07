@@ -2,9 +2,9 @@
 
 ## Sources and selection
 
-- `/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc`, commit `07b6762`: native LFM2.5 inference, advanced sessions, CPU generation/scoring, async adapter, and corresponding tests. This branch adds policy-version checks, immutable prefix snapshots, independent child forks, preserved RNG positions, and optional session GPU timing over the memory-defaults baseline.
-- `/home/lukas928/SimplePT/simple-pt-memory-defaults`, commit `6edae8f`: model, training kernels, checkpoint/tokenizer compatibility; additive `release_inference_buffers()` and async `sleep()` lifecycle. Model-root contents match the value/MIS branch.
-- `/home/lukas928/SimplePT/simple-pt-lfm3-fp8`, commit `639e958`: additive LFM3 inference, seven-tap convolution, gated/partial/sliding attention and optional FP8 operator projections. Its older LFM2/session implementation was deliberately not copied over the newer implementation.
+- `simple-pt-knights-value-mis-sc`, commit `07b6762`: native LFM2.5 inference, advanced sessions, CPU generation/scoring, async adapter, and corresponding tests. This branch adds policy-version checks, immutable prefix snapshots, independent child forks, preserved RNG positions, and optional session GPU timing over the memory-defaults baseline.
+- `simple-pt-memory-defaults`, commit `6edae8f`: model, training kernels, checkpoint/tokenizer compatibility; additive `release_inference_buffers()` and async `sleep()` lifecycle. Model-root contents match the value/MIS branch.
+- `simple-pt-lfm3-fp8`, commit `639e958`: additive LFM3 inference, seven-tap convolution, gated/partial/sliding attention and optional FP8 operator projections. Its older LFM2/session implementation was deliberately not copied over the newer implementation.
 
 All 155 existing worktrees were inspected via `git worktree list` and grouped by inference Python-file hashes. Targeted history/diffs compared adaptive-decode (`5232a21`), async-rollouts (`afd1083`), decode-optimizations (`f45e364`), fp8-inference (`ad0ee05`), lfm3-fp8, memory-defaults, and knights-value-mis-sc. The selected LFM2 implementation includes the mature FP8 MLP/KV/head, shared physical cache, grouped-query decode and adaptive compute-batch optimizations already integrated in the latest value/MIS branch. Exact original source commits and per-file SHA256 values are recorded in `native_source_manifest.json`.
 
@@ -23,7 +23,7 @@ Explicit async `max_batch_size` and configured `max_num_seqs` now both bound the
 Run with GPUs hidden and the shared migration virtual environment:
 
 ```bash
-CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest -q \
+CUDA_VISIBLE_DEVICES='' PYTHONPATH=src uv run python -m pytest -q \
   tests/test_lfm25_engine.py tests/test_lfm25_async_engine.py tests/test_models.py \
   tests/test_lfm25_26b_compat.py tests/test_lfm2_checkpoint_layers.py \
   tests/test_lfm25_fp8_kv.py tests/test_lfm25_fp8.py tests/test_lfm25_cuda.py \
@@ -37,10 +37,10 @@ Result: **68 passed, 104 skipped** in 6.26s. Skips require CUDA. Fourteen PyTorc
 
 The standalone native command writes JSON timing/config/peak-memory metrics and a Markdown file with complete actual sample prompts/responses alongside them. It forces the entire output budget while retaining temperature-1 sampling and sampled-token logprobs, so changing response lengths does not obscure execution speed.
 
-Use a self-contained copied checkpoint for final release QA. Existing local checkpoints available during migration are `/home/lukas928/SimplePT/saved_models/LFM2.5-1.2B-Base`, `LFM2.5-1.2B-Instruct`, and `LFM2.5-1.2B-Thinking`. These are optional user-provided data paths, never runtime source dependencies.
+Use a self-contained copied checkpoint for final release QA. Existing local checkpoints available during migration are `saved_models/LFM2.5-1.2B-Base`, `LFM2.5-1.2B-Instruct`, and `LFM2.5-1.2B-Thinking`. These are optional user-provided data paths, never runtime source dependencies.
 
 ```bash
-PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m climbing_gym.inference.benchmark \
+PYTHONPATH=src uv run python -m climbing_gym.inference.benchmark \
   --model /path/to/LFM2.5-1.2B-Base --device cuda --dtype bfloat16 \
   --batches 1 32 128 --prompt-tokens 128 --output-tokens 4096 --max-model-len 4608 \
   --temperature 1 --warmups 1 --repeats 2 --cuda-graphs \

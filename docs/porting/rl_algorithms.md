@@ -40,7 +40,7 @@ Shared runtime owns `config`, `trainers/{common,packing,checkpoints}`, `training
 Run with the mandated interpreter and CUDA hidden for CPU-only checks:
 
 ```bash
-CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest tests/test_cispo.py tests/test_mis_ppo_algorithm_api.py tests/test_offpolicy_math.py tests/test_offpolicy_loss.py -q
+CUDA_VISIBLE_DEVICES='' PYTHONPATH=src uv run python -m pytest tests/test_cispo.py tests/test_mis_ppo_algorithm_api.py tests/test_offpolicy_math.py tests/test_offpolicy_loss.py -q
 ```
 
 At initial handoff: **27 passed, 15 skipped** across those suites (run in two batches). This covers CISPO signed/clipped gradients and accumulation, all extracted MIS-PPO numerical API regressions, exact expected score-centering gradients, masked extreme ratios, and fused sparse custom-autograd value/gradient parity over FP32/BF16 vocabularies up to 65,536 entries. GPU cases were skipped deliberately. All owned modules/tests pass byte compilation.

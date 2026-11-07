@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 from dataclasses import asdict, dataclass, field, is_dataclass
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -220,6 +221,14 @@ class Optimizer:
     learning_rate: float = 1e-6
     weight_decay: float = 0.0
     fused: bool | None = None
+
+    def __post_init__(self) -> None:
+        for name in ("learning_rate", "weight_decay"):
+            value = getattr(self, name)
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"Optimizer {name} must be finite and nonnegative")
+        if self.fused is not None and type(self.fused) is not bool:
+            raise ValueError("Optimizer fused must be a boolean or None")
 
     def to_dict(self) -> dict[str, Any]:
         return {

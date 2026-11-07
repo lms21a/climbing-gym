@@ -4,6 +4,7 @@ import argparse
 from dataclasses import asdict, dataclass, field
 import json
 import hashlib
+import math
 from pathlib import Path
 import random
 import time
@@ -564,6 +565,9 @@ def _train_sft(run: ResolvedSFTRun, cleanups) -> int:
     policy_optimizer = run.policy_optimizer
     config = run.config
     sft_config = config.sft
+    max_grad_norm = float(sft_config.max_grad_norm)
+    if not math.isfinite(max_grad_norm):
+        raise ValueError("sft.max_grad_norm must be finite; finite nonpositive values disable clipping")
     checkpoint_manager = run.checkpoint_manager
     wandb_logger = run.wandb_logger
 
@@ -718,9 +722,10 @@ def _train_sft(run: ResolvedSFTRun, cleanups) -> int:
                 packing_efficiency_sum += float(packed_batch.packing_efficiency) * float(packed_batch.sequence_count)
 
             grad_norm = compute_grad_norm(policy_model)
-            max_grad_norm = float(sft_config.max_grad_norm)
+            if not math.isfinite(grad_norm):
+                raise FloatingPointError("Non-finite SFT gradient norm; optimizer step was not applied")
             if max_grad_norm > 0.0:
-                torch.nn.utils.clip_grad_norm_(policy_model.parameters(), max_grad_norm)
+                torch.nn.utils.clip_grad_norm_(policy_model.parameters(), max_grad_norm, error_if_nonfinite=True)
             policy_optimizer.step()
             policy_optimizer.zero_grad(set_to_none=True)
 

@@ -1,6 +1,6 @@
 # Follow-up verification
 
-The initial CPU-only review covered the standalone Futoshiki hill-climb example, readiness-gated Knights value training, optional CFOP integration, and removal of GitHub workflows. That phase used `/home/lukas928/SimplePT/.venv/bin/python` with `CUDA_VISIBLE_DEVICES=''` and launched no pretrained model inference/evaluation, training run, or GPU work. Tiny policies and explicit inference doubles were unit-test fixtures. The separately requested CUDA-enabled follow-up is recorded below; source SimplePT worktrees remained unchanged throughout.
+The initial CPU-only review covered the standalone Futoshiki hill-climb example, readiness-gated Knights value training, optional CFOP integration, and removal of GitHub workflows. That phase used `uv run python` with `CUDA_VISIBLE_DEVICES=''` and launched no pretrained model inference/evaluation, training run, or GPU work. Tiny policies and explicit inference doubles were unit-test fixtures. The separately requested CUDA-enabled follow-up is recorded below; source SimplePT worktrees remained unchanged throughout.
 
 The [original GPU release verification](release_verification.md) remains evidence for the shared native engine and LFM checkpoint compatibility. It does not establish throughput, capacity, convergence, or historical accuracy reproduction for these new example workloads. Their launch commands require their own matched native preflight.
 
@@ -36,15 +36,15 @@ AST inspection found no `simple_pt` imports in the runnable Futoshiki or CFOP mo
 
 - **92 passed** across independent follow-up, Futoshiki projection/runtime, and CFOP suites in 7.00 seconds.
 - **6 passed** in the reviewed Knights warmup suite in 5.41 seconds, including both warmup continuation boundaries.
-- Actual CPU-only preparation/status and help commands completed; [record](../../artifacts/verification/followup_static.json), [preparation log](../../artifacts/verification/followup_prepare.log), [status output](../../artifacts/verification/followup_status.log).
-- Test output: [Futoshiki/CFOP/follow-up log](../../artifacts/verification/followup_focused.log), [Knights warmup log](../../artifacts/verification/followup_knights.log).
+- Actual CPU-only preparation/status and help commands completed; `artifacts/verification/followup_static.json`, `artifacts/verification/followup_prepare.log`, `artifacts/verification/followup_status.log`.
+- Test output: `artifacts/verification/followup_focused.log`, `artifacts/verification/followup_knights.log`.
 
 ```bash
-CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest -q \
+CUDA_VISIBLE_DEVICES='' PYTHONPATH=src uv run python -m pytest -q \
   tests/test_followup_verification.py tests/test_futoshiki_hill_climb_projection.py \
   tests/test_hill_climb_runtime.py tests/test_cfop_support.py \
   tests/test_cfop_reasoning.py tests/test_cfop_integration.py
-CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest -q \
+CUDA_VISIBLE_DEVICES='' PYTHONPATH=src uv run python -m pytest -q \
   tests/test_value_warmup.py
 ```
 
@@ -58,12 +58,12 @@ The complete repository suite was rerun with **`CUDA_VISIBLE_DEVICES=0`** agains
 
 Hardware/runtime: NVIDIA GeForce RTX 4090, 24,564 MiB, compute capability 8.9, driver 610.88; PyTorch `2.10.0+cu128`, CUDA `12.8`, Triton `3.6.0`, FlashAttention `2.8.3`, pytest `9.0.2`. The suite includes native CUDA/FP8 kernels, sampler probabilities, adaptive/session behavior, the 64-iteration graph recapture regression, and actual CUDA optimizer offload/resume checks, alongside the new example and CFOP contracts. These are existing unit/integration tests, not a pretrained model training or evaluation campaign, and do not establish new model quality or full-training capacity.
 
-Full evidence: [pytest log](../../artifacts/verification/cuda_followup/pytest.log), [JUnit XML](../../artifacts/verification/cuda_followup/results.xml), [hardware/environment](../../artifacts/verification/cuda_followup/hardware.json), and [machine-readable summary](../../artifacts/verification/cuda_followup/summary.json). The summary explicitly records empty skip, failure, and error lists. No compute process remained after completion.
+Full evidence: `artifacts/verification/cuda_followup/pytest.log`, `artifacts/verification/cuda_followup/results.xml`, `artifacts/verification/cuda_followup/hardware.json`, and `artifacts/verification/cuda_followup/summary.json`. The summary explicitly records empty skip, failure, and error lists. No compute process remained after completion.
 
 ```bash
 mkdir -p artifacts/verification/cuda_followup
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=8 PYTHONPATH=src \
-  /home/lukas928/SimplePT/.venv/bin/python -m pytest -ra \
+  uv run python -m pytest -ra \
   --junitxml=artifacts/verification/cuda_followup/results.xml \
   > artifacts/verification/cuda_followup/pytest.log 2>&1
 ```

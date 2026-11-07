@@ -1,6 +1,6 @@
 # Training runtime port
 
-Source of truth: `/home/lukas928/SimplePT/simple-pt-memory-defaults`, commit `6edae8f` (`src/simple_pt_2/config`, `trainers/{common,packing,checkpoints}.py`, `grpo.py`, `training_memory.py`, `optimizer_resume.py`, `dataset_checkpoint.py`, and `countdown_dynamic.py`). Algorithm implementations are documented separately; their value/MIS lineage includes `simple-pt-knights-value-mis-sc` at `07b6762`. Source trees were read only. Imports now use `climbing_gym`; runtime paths never resolve against the installed package or original checkout.
+Source of truth: `simple-pt-memory-defaults`, commit `6edae8f` (`src/simple_pt_2/config`, `trainers/{common,packing,checkpoints}.py`, `grpo.py`, `training_memory.py`, `optimizer_resume.py`, `dataset_checkpoint.py`, and `countdown_dynamic.py`). Algorithm implementations are documented separately; their value/MIS lineage includes `simple-pt-knights-value-mis-sc` at `07b6762`. Source trees were read only. Imports now use `climbing_gym`; runtime paths never resolve against the installed package or original checkout.
 
 ## Public execution contract
 
@@ -43,7 +43,7 @@ Before model loading, training validates a saved representative native benchmark
 
 ## Verification
 
-All code/tests used `/home/lukas928/SimplePT/.venv/bin/python`; no GPU training or model evaluation was launched by this task.
+All code/tests used `uv run python`; no GPU training or model evaluation was launched by this task.
 
 - `tests/test_training_runtime.py`: 15 CPU integration tests, including one real optimizer update through all ten algorithm routes (full original PPO/CISPO/GRPO loops, unified Flash/MIS/grouped/MIS-PPO, value critic freeze/fit/actor cycle), native-only dispatch, offload/reload ordering, exact master/moment/RNG continuation, bounded PPO optimizer builders, and portable config/W&B defaults.
 - `tests/test_dataset_checkpoint.py`: 10 cases covering pending dynamic examples, shuffle across epochs, changed-bank rejection, partial-state refusal, native seed continuation, hard request budgets, and whole-group concurrency constraints.

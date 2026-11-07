@@ -1,8 +1,8 @@
 # Futoshiki: a complete hill climb
 
-This example follows **“Hill climbing with a 1.2B language model”**, the November 5, 2026 local draft at `Research/lms21a.github.io/src/content/posts/hill-climbing-with-a-small-model.mdx`. The draft describes building a reasoning checkpoint from LFM2.5-1.2B-Instruct, finding a first Futoshiki foothold with verified projection SFT, climbing 4×4 puzzles, then restarting and climbing three 5×5 tiers.
+This example records the experiments behind **“Hill climbing with a 1.2B language model”** (research draft, November 5, 2026). It builds a reasoning checkpoint from LFM2.5-1.2B-Instruct, finds a first Futoshiki foothold with verified projection SFT, climbs 4×4 puzzles, then restarts and climbs three 5×5 tiers.
 
-It includes the stages and their data/configuration lineage. Archived measurements are in [historical_results.json](historical_results.json); source artifact hashes, checkpoint identities, seeds, and dataset hashes are in [provenance.json](provenance.json). Those are historical results, not accuracy guarantees for a new run. The draft is unpublished; this example does not require access to the blog, its private chat, a SimplePT checkout, or historical model weights.
+It includes the stages and their data/configuration lineage. Archived measurements are in [historical_results.json](historical_results.json); source artifact hashes, checkpoint identities, seeds, and dataset hashes are in [provenance.json](provenance.json). Those are historical results, not accuracy guarantees for a new run. The recipe's data and configurations are included; supply a compatible local model checkpoint as described below.
 
 ## The route
 
@@ -150,9 +150,9 @@ The 5×5 MIS/score-centering stages retain their historical objective reduction 
 
 ## Provenance
 
-`provenance.json` contains compact identities and hashes for original manifests, protocols, configurations, and results. Historical absolute artifact locations are archival metadata; execution reads the files prepared under your chosen run root. Original source commits that were not available on GitHub are recorded as commit IDs without invented permalink URLs.
+`provenance.json` contains compact identities and hashes for original manifests, protocols, configurations, and results. Artifact locations are relative to the archived source workspace; execution reads the files prepared under your chosen run root. Original source commits that were not available on GitHub are recorded as commit IDs without invented permalink URLs.
 
-The selected original source report and two-expert experiment record were independently matched to SHA256 hashes in the blog's evidence manifest. The example includes no private blog-chat transcript, model weights, or large rollout archive. It uses algorithmic verification and same-lineage model outputs throughout.
+The selected original source report and two-expert experiment record were independently matched to SHA256 hashes in the research evidence manifest. The data manifests retain these identities. Supervision uses algorithmic verification and same-lineage model outputs throughout.
 
 The RL driver keeps all saved policy exports, the latest two optimizer/cohort
 states, and explicitly selected intermediate ancestors (including GSM8K update

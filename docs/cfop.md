@@ -4,7 +4,16 @@ CFOP adds exact Rust-backed cube verification through the optional `cfop_solver`
 
 ## Install the optional solver
 
-The normal Climbing Gym installation and its lockfile do not require this private repository. Install the pinned solver only when using CFOP. With repository access configured:
+The required `cfop-solver` 0.4.0 source is currently in the private
+[`lms21a/cfopsolver`](https://github.com/lms21a/cfopsolver) repository. This adapter
+is not a self-contained public CFOP installation: you need existing access to
+that repository or a compatible wheel supplied separately by its maintainer.
+The normal Climbing Gym install and lockfile do not fetch or require it. All
+other environments remain usable without the solver.
+
+If you already have access, install the pinned solver into the same environment
+as Climbing Gym after its base dependencies are ready:
+
 
 ```bash
 uv pip install --python .venv/bin/python \
@@ -17,6 +26,11 @@ Alternatively, use your existing clean checkout at that revision:
 git -C /absolute/path/to/CFOPSolver rev-parse HEAD
 uv pip install --python .venv/bin/python /absolute/path/to/CFOPSolver
 ```
+
+Use the pinned revision above; the adapter's version/schema checks also reject
+incompatible builds. A later exact `uv sync` may remove this separately installed
+package; reinstall it afterward, or use `uv sync --inexact` when intentionally
+preserving external packages.
 
 Building from source requires Rust/Cargo and the maturin build backend. A compatible prebuilt wheel can also be installed with `uv pip install --python .venv/bin/python /path/to/cfop_solver-0.4.0-...whl`. The historical Linux wheel SHA256 is recorded in [the porting note](porting/cfop.json); a locally rebuilt wheel may have a different container hash.
 

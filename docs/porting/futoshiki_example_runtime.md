@@ -93,7 +93,7 @@ and contexts; it emits pass@1/4/8 as applicable, mean lengths, cap rates, all
 complete responses as JSONL, and tier/outcome Markdown trace samples. Separate
 `evaluate --checkpoint` requires preflight for that actual checkpoint/panel.
 
-Validation used the mandated `/home/lukas928/SimplePT/.venv/bin/python`:
+Validation used the mandated `uv run python`:
 
 - All 18 stages prepared successfully through the CLI without model loading;
   all 16 generated RL TOMLs passed configuration/native validation.

@@ -1,21 +1,21 @@
 {
   "sources": {
     "session": {
-      "path": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc",
+      "path": "simple-pt-knights-value-mis-sc",
       "commit": "07b67622aeab814512a5c5c551d663de65863b21"
     },
     "memory": {
-      "path": "/home/lukas928/SimplePT/simple-pt-memory-defaults",
+      "path": "simple-pt-memory-defaults",
       "commit": "6edae8f74da3559a86ed5a6ac7c1a7782fb0ea91"
     },
     "lfm3": {
-      "path": "/home/lukas928/SimplePT/simple-pt-lfm3-fp8",
+      "path": "simple-pt-lfm3-fp8",
       "commit": "639e9584da5fc4fe9f333c18af21e5b0b399a81c"
     }
   },
   "files": {
     "src/climbing_gym/inference/__init__.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/__init__.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/__init__.py",
       "source_sha256": "d3281177a3d245450d0d66115b7d3eeea937a75a1b4ae76f08cdb65419ad081d",
       "ported_sha256": "5d3da108cd2290584dbcf1bc02495398b65c5708e92d94f507ae3948441c1a0d"
     },
@@ -25,164 +25,166 @@
       "ported_sha256": "ff0016b2acd29bb8ea5a81cd9d8adfc98d91b373cad601f0c274f626576f261f"
     },
     "src/climbing_gym/inference/config.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/config.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/config.py",
       "source_sha256": "0c9aae47e4631da9cb1007c278cea50445fadc98a7dc228ae76126acbb8a6014",
       "ported_sha256": "9a7216c7f86b4f1e617a0f6db03b2433589c0ce3c3e3683004303e0e7083a8fe"
     },
     "src/climbing_gym/inference/engine.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/engine.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/engine.py",
       "source_sha256": "82c3231fa5242ee1ba76645433ac7122d2d91490828b609f77d437096014c576",
       "ported_sha256": "2ca376e3af939886f8eb7d54c6f4b07d5654b6f9ae508fb7a964b87b39677640"
     },
     "src/climbing_gym/inference/lfm25_async_engine.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_async_engine.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_async_engine.py",
       "source_sha256": "30c73f4c3949a8b3b60c022ebf5340cba058737398ccb16cc58ddd86ec04f9d3",
       "ported_sha256": "3ae60a6121f1b4e1322d12598b7265c9fbbed835fd7aa4de1cfd9e472fd471cd"
     },
     "src/climbing_gym/inference/lfm25_batching.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_batching.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_batching.py",
       "source_sha256": "683f33fa22f570c3f0c5358fa26d7c6e1d84343e9544b2f56ffc9b0bd0b40148",
       "ported_sha256": "683f33fa22f570c3f0c5358fa26d7c6e1d84343e9544b2f56ffc9b0bd0b40148"
     },
     "src/climbing_gym/inference/lfm25_bf16.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_bf16.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_bf16.py",
       "source_sha256": "d6af7f8b157e071ce9a70ef94af997db566851bf0f177536e68ea9d9785754f6",
       "ported_sha256": "d6af7f8b157e071ce9a70ef94af997db566851bf0f177536e68ea9d9785754f6"
     },
     "src/climbing_gym/inference/lfm25_cuda.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_cuda.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_cuda.py",
       "source_sha256": "e90a29f9a224df8bc5adafc164861a6aaf8c796b31a9d69703a0471da8852b49",
       "ported_sha256": "2edc3ddba9cd3702e330dc07bd75542577775120aa2ffbc3e54f532c2ff06f0d"
     },
     "src/climbing_gym/inference/lfm25_cuda_kernels.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_cuda_kernels.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_cuda_kernels.py",
       "source_sha256": "0f61a54430ca898b79e25fd2f48d4be05f3bf5434d9869876f9395cc470ad3d1",
       "ported_sha256": "0f61a54430ca898b79e25fd2f48d4be05f3bf5434d9869876f9395cc470ad3d1"
     },
     "src/climbing_gym/inference/lfm25_engine.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_engine.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_engine.py",
       "source_sha256": "883f4f6977838443adc8ae3e825295b55a84af7734827de81e277d632567af66",
       "ported_sha256": "2a8c8370c9af975ddd9af13c12bee8b819201ac21a036c39319985b1021806ec"
     },
     "src/climbing_gym/inference/lfm25_fp8.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_fp8.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_fp8.py",
       "source_sha256": "cf4d30657ec6b90d6fea962b140d70e38bd851e39465ae277348ea0f0eda7b4b",
       "ported_sha256": "cf4d30657ec6b90d6fea962b140d70e38bd851e39465ae277348ea0f0eda7b4b"
     },
     "src/climbing_gym/inference/lfm25_fp8_kv.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm25_fp8_kv.py",
+      "source": "simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm25_fp8_kv.py",
       "source_sha256": "9f14af9fa91aff211431eb281ea76886507bea29ffa449fe26d0c4302ec3e1a5",
       "ported_sha256": "9f14af9fa91aff211431eb281ea76886507bea29ffa449fe26d0c4302ec3e1a5"
     },
     "src/climbing_gym/inference/lfm25_sampling.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_sampling.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_sampling.py",
       "source_sha256": "64aed89c49625145569e52ece2798c1c3814b20f62908052fa93a616114fe727",
       "ported_sha256": "64aed89c49625145569e52ece2798c1c3814b20f62908052fa93a616114fe727"
     },
     "src/climbing_gym/inference/lfm25_session.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_session.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/lfm25_session.py",
       "source_sha256": "8d32ec9913ec9b0dfe3d12a51a38197c3a82a56e621040336d0d623fa36b78e1",
       "ported_sha256": "705415f1ca517d777517f3f2763ca9ffc54009ec52ce51c044325cc775ae62eb"
     },
     "src/climbing_gym/inference/lfm3_cuda.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_cuda.py",
+      "source": "simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_cuda.py",
       "source_sha256": "280f14bb08135f9fd4afa95c4bda82ab54dc147a923005521fd9b413acf2fc85",
       "ported_sha256": "5ee551cad5f74611ddb4a327135dcba42bb59b03384d2ce1b6fbec41428c59a6"
     },
     "src/climbing_gym/inference/lfm3_engine.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_engine.py",
+      "source": "simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_engine.py",
       "source_sha256": "ef0841b413f0a11752ae7a0211f6d0cb6c65b58fedbf4501e4b701c028723de3",
       "ported_sha256": "92e2c9997529888209aca21554817c699cbeb57054e6daafe73cf1677ae156df"
     },
     "src/climbing_gym/inference/lfm3_kernels.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_kernels.py",
+      "source": "simple-pt-lfm3-fp8/src/simple_pt_2/inference/lfm3_kernels.py",
       "source_sha256": "81232938997bbf0a9e776268e064efea30fbfa1b4571d7a9eb895f107f8e0c7f",
       "ported_sha256": "81232938997bbf0a9e776268e064efea30fbfa1b4571d7a9eb895f107f8e0c7f"
     },
     "src/climbing_gym/inference/text_stops.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/text_stops.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/text_stops.py",
       "source_sha256": "87671b7a1e2b30dd023c71bd94c7894f2285773c5cff3e0f6cca68ea639912a6",
       "ported_sha256": "87671b7a1e2b30dd023c71bd94c7894f2285773c5cff3e0f6cca68ea639912a6"
     },
     "src/climbing_gym/inference/types.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/types.py",
+      "source": "simple-pt-knights-value-mis-sc/src/simple_pt_2/inference/types.py",
       "source_sha256": "43f6e578016f7c7c9bf507be7edd429c925515014881e5622f577c014c51cfce",
       "ported_sha256": "50da9d5778bfa145c8792dd207e37444e4eb0da5130255c1d3a4684d832bb3ee"
     },
     "src/climbing_gym/models/__init__.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/__init__.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/__init__.py",
       "source_sha256": "f7214b7b571cc7ddb253f611b90333a5292f0d73ce4a309bd03b96f0a87bd842",
       "ported_sha256": "65670c6235f098a943047629a5235b3d734d58b4f152c37b5b7f0d4dfe2adf80"
     },
     "src/climbing_gym/models/benchmarks/__init__.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/benchmarks/__init__.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/benchmarks/__init__.py",
       "source_sha256": "449ba8c73bc7d480d300da8477bccc70f6baf336ae14c9d1ba43636554035b86",
       "ported_sha256": "f5ad4729e626a638364ac771d05ef959c27def6e2990dcd354360f00d29c9913"
     },
     "src/climbing_gym/models/benchmarks/lfm2.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/benchmarks/lfm2.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/benchmarks/lfm2.py",
       "source_sha256": "c7f2854bb1072dd2bfe15fb76d60d3c1d30d368b3ce40d27612e1a843ef29933",
       "ported_sha256": "d9ca5a003c22c1fc9d6bf901ce36f8132b919ad968c64e76bbeb98d4b86e5b65"
     },
     "src/climbing_gym/models/config.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/config.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/config.py",
       "source_sha256": "5f23f7eea5ed73d7666dfa0131c46f6908852a351617a8f9c51dcb1c9e98ac9e",
       "ported_sha256": "54c131c3ed07bfef55846d37ba92cb3af013538e12b20c294839cfccbb0e0f5b"
     },
     "src/climbing_gym/models/kernels/__init__.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/__init__.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/__init__.py",
       "source_sha256": "494c82db2336e622f354eccd0327ccf155e2ba21ff9a6c8e51a6a2c0b40b47c6",
       "ported_sha256": "95e1caeaaadf6757433db2c8edce518e94bfa2660afc93ae502acc16cd77c376"
     },
     "src/climbing_gym/models/kernels/dppo_loss.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/dppo_loss.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/dppo_loss.py",
       "source_sha256": "75c7654abdc5c5b81370c9c60fdde54d0d50b8b42de64bec85487c0b178bf464",
       "ported_sha256": "75c7654abdc5c5b81370c9c60fdde54d0d50b8b42de64bec85487c0b178bf464"
     },
     "src/climbing_gym/models/kernels/fused_cispo_head.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/fused_cispo_head.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/fused_cispo_head.py",
       "source_sha256": "3d18bc704c89dcaa0ea38281f3a34a2d566427ef227fa5b0e7d260f87f465091",
       "ported_sha256": "3d18bc704c89dcaa0ea38281f3a34a2d566427ef227fa5b0e7d260f87f465091"
     },
     "src/climbing_gym/models/kernels/lfm2_fused.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/lfm2_fused.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/lfm2_fused.py",
       "source_sha256": "48044fd78d161112e66f4210fce4259daf6d2361de08a94f12442c73a4415200",
       "ported_sha256": "48044fd78d161112e66f4210fce4259daf6d2361de08a94f12442c73a4415200"
     },
     "src/climbing_gym/models/kernels/lfm2_shortconv.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/lfm2_shortconv.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/lfm2_shortconv.py",
       "source_sha256": "aabf88831205e2da6b86972b1f988928be5e0cf9d5ccd76ffb91401cf5957db2",
       "ported_sha256": "aabf88831205e2da6b86972b1f988928be5e0cf9d5ccd76ffb91401cf5957db2"
     },
     "src/climbing_gym/models/kernels/master_weight_adamw.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/master_weight_adamw.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/master_weight_adamw.py",
       "source_sha256": "53a731d1276ba150e9d9fa5fcd2cb121db9131632d22e803a10957f520eb970f",
       "ported_sha256": "53a731d1276ba150e9d9fa5fcd2cb121db9131632d22e803a10957f520eb970f"
     },
     "src/climbing_gym/models/kernels/mlp_recompute.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/mlp_recompute.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/mlp_recompute.py",
       "source_sha256": "c4ca02b4ffdfd08c019e4441400002ff2bc89a833ac2f2c551f6d1c5ff644aef",
       "ported_sha256": "c4ca02b4ffdfd08c019e4441400002ff2bc89a833ac2f2c551f6d1c5ff644aef"
     },
     "src/climbing_gym/models/kernels/offpolicy_loss.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/kernels/offpolicy_loss.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/kernels/offpolicy_loss.py",
       "source_sha256": "07edc968cd5b46ed19317b4b27971e058dac00d853cc9c55947bc1ee90b6824e",
       "ported_sha256": "ab3e944c32c319bada6969aad5bb410a6977336e3d347c8c7ae0715120b4cdd8"
     },
     "src/climbing_gym/models/lfm2.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/lfm2.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/lfm2.py",
       "source_sha256": "9658c0b055248824321ac20fd06feff47828284831418fcc9e7df5af57dfda86",
       "ported_sha256": "3ecd172d98a52debc2c918dff34c57d0d36224304f74999e6b82dfe4059cdac4"
     },
     "src/climbing_gym/models/lfm2_compat.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt/lfm2_compat.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt/lfm2_compat.py",
       "source_sha256": "a2cd11a9da5c28cd02af4ca4eef3054ac45863a5906b5bed1bfe721f7d17b2a3",
       "ported_sha256": "308f2ccf08fb16ee04992b468f3e7866c3d029c16e97c89da80e7c934b511e87"
     },
     "src/climbing_gym/models/registry.py": {
-      "source": "/home/lukas928/SimplePT/simple-pt-memory-defaults/src/simple_pt_2/models/registry.py",
+      "source": "simple-pt-memory-defaults/src/simple_pt_2/models/registry.py",
       "source_sha256": "1b6e16e74ece78e48a4e30f9e9c47ea20c2562a367f87ec6a501c3c903079250",
       "ported_sha256": "53d89fd6ba77fac4e17ab37b541ed4a0581798b8d8e67f103adc845a236b4ce4"
     }
-  }
+  },
+  "path_convention": "Paths identify historical artifacts relative to their archived source workspace; they are not runtime dependencies.",
+  "snapshot_note": "Source and ported SHA256 fields record the initial migration snapshot. Later implementation fixes are recorded in Git history."
 }

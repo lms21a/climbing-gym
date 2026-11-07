@@ -2,7 +2,7 @@
 
 ## Provenance
 
-Ported working Python implementations from read-only `/home/lukas928/SimplePT/simple-pt-memory-defaults`, commit `6edae8f` (`codex/native-training-memory-defaults-20261104`). Paths under `src/simple_pt_2/` map directly to `src/climbing_gym/`:
+Ported working Python implementations from read-only `simple-pt-memory-defaults`, commit `6edae8f` (`codex/native-training-memory-defaults-20261104`). Paths under `src/simple_pt_2/` map directly to `src/climbing_gym/`:
 
 - `envs/{contracts,countdown,futoshiki,knights_knaves,math_qa}.py` and a narrowed `envs/__init__.py`.
 - `rollout/{config,contracts,coordinator,overlap,runner}.py`, public exports, and `harnesses/{direct,infinity_think,numbered_notebook}.py`.
@@ -29,7 +29,7 @@ Native integration requires `inference.config.SamplingConfig`, `inference.types.
 
 ## Verification
 
-Used only `/home/lukas928/SimplePT/.venv/bin/python`, with the destination `src/` on `PYTHONPATH`. **180 CPU tests passed in 5.69 seconds** across environment/reward parsing, independent arithmetic and Boolean semantics, Futoshiki Latin-square enumeration and uniqueness, deterministic/disjoint datasets, solver certificate tampering, malformed answers, notebook operations, direct/multi-turn rollouts, bounded async requests, aborts, stall detection, sync/async coordinator calls, overlap, and dataset cursor state. Native sampler metadata preservation has dedicated tests, including the distinction between unavailable and empty log probabilities.
+Used only `uv run python`, with the destination `src/` on `PYTHONPATH`. **180 CPU tests passed in 5.69 seconds** across environment/reward parsing, independent arithmetic and Boolean semantics, Futoshiki Latin-square enumeration and uniqueness, deterministic/disjoint datasets, solver certificate tampering, malformed answers, notebook operations, direct/multi-turn rollouts, bounded async requests, aborts, stall detection, sync/async coordinator calls, overlap, and dataset cursor state. Native sampler metadata preservation has dedicated tests, including the distinction between unavailable and empty log probabilities.
 
 Ported source tests were narrowed by removing unrelated environments and script-only historical experiments. Two source tests were stale relative to the implementation; production behavior was not changed:
 

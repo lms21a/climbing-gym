@@ -7,7 +7,7 @@ The baseline is local commit `0bf6766`. Implementation/source provenance lives i
 [projection note](futoshiki_example_projection.md),
 [Knights method note](knights_value_method.md), and [CFOP metadata](cfop.json).
 Original SimplePT trees remained read-only; the package has no runtime imports
-from them. All Python checks used `/home/lukas928/SimplePT/.venv/bin/python`
+from them. All Python checks used `uv run python`
 with `CUDA_VISIBLE_DEVICES=''`; dependency/build/install operations used `uv`.
 
 ## User documentation and examples
@@ -58,9 +58,9 @@ The full repository CPU suite passed **673 tests**, with **130 CUDA skips**,
 
 ```bash
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=8 PYTHONPATH=src \
-  /home/lukas928/SimplePT/.venv/bin/python -m pytest -q
-uv lock --check --python /home/lukas928/SimplePT/.venv/bin/python
-uv build --python /home/lukas928/SimplePT/.venv/bin/python
+  uv run python -m pytest -q
+uv lock --check --python 3.12
+uv build --python 3.12
 ```
 
 The focused packaging suite passed **26 tests**. The lockfile check succeeds.

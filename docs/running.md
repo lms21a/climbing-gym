@@ -22,7 +22,9 @@ choose chat templating and the prefill to match that checkpoint's tokenizer.
 Strict arithmetic and puzzle examples append `<thinking>\n`, require a natural
 `</thinking>` close, and finish with `<answer>...</answer>`. CFOP instead uses its
 [verified phase-program protocol](cfop.md), with no incompatible thinking prefill;
-its solver bindings are optional. Ordinary chat and raw prompt modes remain
+its separately installed solver bindings currently require private repository
+access or a compatible supplied wheel. The four core environments need no CFOP
+access. Ordinary chat and raw prompt modes remain
 available. Check saved actual prompts before long runs, especially when changing
 a checkpoint's chat template.
 
@@ -188,11 +190,12 @@ that evidence. SFT periodic evaluation needs its own evaluation preflight.
 ## Development and local artifacts
 
 ```bash
-uv run pytest -q
+CUDA_VISIBLE_DEVICES='' uv run pytest -q
 uv build
 ```
 
-Run these checks locally. GPU tests skip when CUDA is unavailable. Artifacts,
+See [Contributing](../CONTRIBUTING.md) for setup from a fresh checkout. Run these
+checks locally. GPU tests skip when CUDA is unavailable. Artifacts,
 weights, logs, credentials and caches are ignored. Keep a copy of actual evaluation
 traces with each experiment. Source provenance and validation limitations live in
 `docs/porting/`; this code has no runtime import from the original SimplePT tree.

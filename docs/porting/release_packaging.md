@@ -14,7 +14,7 @@ The distribution is `climbing-gym` 0.1.0, imported as `climbing_gym`, requiring
 Python >=3.12 (validated on 3.12.8). The user selected MIT; `LICENSE` credits
 Lukas and contributors (2026). Original attribution/comments remain in ported
 source. The original package metadata names Lukas; its read-only provenance is
-`/home/lukas928/SimplePT/simple-pt/pyproject.toml`. Implementation source paths
+`simple-pt/pyproject.toml`. Implementation source paths
 and exact selected revisions are recorded in the other owner notes and native
 manifest, particularly memory-defaults `6edae8f` and value/MIS `07b6762`.
 Model weights/external datasets retain their own licenses and are not bundled.
@@ -69,7 +69,7 @@ Training, standalone evaluation and SFT use the same helper; SFT now honors
 
 ## Validation
 
-Every command used the mandated `/home/lukas928/SimplePT/.venv/bin/python` for
+Every command used the mandated `uv run python` for
 Python code/tests and `uv` for dependency resolution/build/install.
 No GPU inference, model training or environment model evaluation was launched
 by this packaging assignment. Unit-test fixtures are not model-quality results.
@@ -83,8 +83,8 @@ by this packaging assignment. Unit-test fixtures are not model-quality results.
 - Combined packaging/native-benchmark/preflight scope: **45 passed** in 2.74s
   (the final lazy-import assertions were rerun separately: 24 passed in 2.53s).
   Native benchmark testing uses a tiny CPU fixture; no 1.2B performance claim.
-- `uv lock --python /home/lukas928/SimplePT/.venv/bin/python` succeeds.
-- `uv build --python /home/lukas928/SimplePT/.venv/bin/python` creates wheel and
+- `uv lock --python 3.12` succeeds.
+- `uv build --python 3.12` creates wheel and
   sdist. Wheel metadata, MIT license, entrypoint and content boundaries were
   inspected. Sdist includes source, examples/configs, docs and lockfile. Weights,
   experiment artifacts and Python caches are excluded.

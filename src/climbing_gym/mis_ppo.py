@@ -45,6 +45,8 @@ def _resolve_ratio_bounds(
 ) -> tuple[float, float]:
     lower = float(ratio_min)
     upper = float(ratio_max)
+    if not math.isfinite(lower) or not math.isfinite(upper):
+        raise ValueError(f"{label} bounds must be finite, got lower={lower} upper={upper}")
     if lower <= 0.0 or upper <= 0.0:
         raise ValueError(f"{label} bounds must be > 0, got lower={lower} upper={upper}")
     if lower > upper:
@@ -856,10 +858,13 @@ def update_policy(run, trajectories):
             weight = 1. if name in {"active_tokens", "active_sequences", "valid_tokens"} else valid_count / total_valid
             totals[name] = totals.get(name, 0.) + float(value.detach()) * weight
     norm = torch.nn.utils.clip_grad_norm_(policy.parameters(), trainer.policy_max_grad_norm, error_if_nonfinite=True)
+    if critic is not None:
+        # Validate both gradient sets before either optimizer can mutate its
+        # model/state. A bad critic backward must not leave a half-applied step.
+        value_norm = torch.nn.utils.clip_grad_norm_(critic.parameters(), trainer.value_max_grad_norm, error_if_nonfinite=True)
     run.policy_optimizer.step()
     run.policy_optimizer.zero_grad(set_to_none=True)
     if critic is not None:
-        value_norm = torch.nn.utils.clip_grad_norm_(critic.parameters(), trainer.value_max_grad_norm, error_if_nonfinite=True)
         run.value_optimizer.step()
         run.value_optimizer.zero_grad(set_to_none=True)
         metrics["value/grad_norm"] = float(value_norm)

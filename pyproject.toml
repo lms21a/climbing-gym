@@ -5,7 +5,7 @@ description = "Native LFM post-training, verified reasoning environments, and pr
 readme = "README.md"
 authors = [{name = "Lukas"}]
 license = "MIT"
-license-files = ["LICENSE"]
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 requires-python = ">=3.12"
 keywords = ["reinforcement-learning", "post-training", "lfm", "reasoning"]
 classifiers = [
@@ -24,12 +24,19 @@ dependencies = [
   "wandb>=0.23.1,<0.24",
 ]
 
+[project.urls]
+Repository = "https://github.com/lms21a/climbing-gym"
+Documentation = "https://github.com/lms21a/climbing-gym/blob/main/README.md"
+Issues = "https://github.com/lms21a/climbing-gym/issues"
+
 [project.optional-dependencies]
 cuda = [
   "triton>=3.6,<3.7; sys_platform == 'linux'",
   "flash-attn>=2.8.3,<2.9",
   "setuptools>=80.10.2,<81",
   "wheel>=0.46.3,<1",
+  "psutil>=7,<8",
+  "ninja>=1.11,<2",
 ]
 
 [project.scripts]
@@ -46,7 +53,7 @@ build-backend = "hatchling.build"
 packages = ["src/climbing_gym"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/configs", "/examples", "/docs", "/README.md", "/LICENSE", "/AGENTS.md", "/pyproject.toml", "/uv.lock"]
+include = ["/src", "/tests", "/configs", "/examples", "/docs", "/README.md", "/LICENSE", "/AGENTS.md", "/CONTRIBUTING.md", "/THIRD_PARTY_NOTICES.md", "/pyproject.toml", "/uv.lock"]
 exclude = ["**/__pycache__", "**/*.pyc"]
 
 [tool.pytest.ini_options]

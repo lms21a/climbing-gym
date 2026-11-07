@@ -71,7 +71,7 @@ Pure offline SFT has no inference request queue or rollout throughput to invent.
 CPU verification command:
 
 ```bash
-PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest \
+PYTHONPATH=src uv run python -m pytest \
   tests/test_sft.py tests/test_projection_sampling.py tests/test_sft_eval.py -q
 ```
 

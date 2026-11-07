@@ -44,3 +44,52 @@ def test_cuda_offload_resume_keeps_next_update_and_fp32_state_exact(host_state):
     if host_state:
         assert optimizer.workspace_bytes_last_step <= 257 * 12
         assert other.workspace_bytes_last_step <= 257 * 12
+
+
+@pytest.mark.parametrize('fp8', [False, True])
+def test_owned_native_actor_close_reclaims_cuda_state_before_reload(monkeypatch, fp8):
+    import asyncio
+    import math
+    import weakref
+
+    from climbing_gym.inference import InferenceEngineConfig, SamplingConfig
+    from climbing_gym.inference.lfm25_async_engine import LFM25AsyncInferenceEngine
+    from test_lfm25_async_engine import _FakeTokenizer
+    from test_lfm25_cuda import _engine
+
+    references = []
+
+    def load_native(*args, **kwargs):
+        _, native = _engine()
+        references.append(weakref.ref(native))
+        return native
+
+    monkeypatch.setattr('climbing_gym.inference.lfm25_async_engine.load_lfm2_tokenizer',
+                        lambda *args: _FakeTokenizer())
+    monkeypatch.setattr('climbing_gym.inference.lfm25_async_engine.LFM25Engine.from_pretrained',
+                        load_native)
+    for _ in range(2):
+        adapter = LFM25AsyncInferenceEngine(
+            InferenceEngineConfig(model_path='tiny-cuda-fixture', max_num_seqs=2),
+            max_batch_size=2, compile_decode=False, cuda_graphs=True,
+            fp8_mlp=fp8, fp8_kv=fp8, fp8_lm_head=fp8, adaptive_batching=True,
+        )
+        try:
+            outputs = asyncio.run(adapter.generate_many(
+                [{'prompt_token_ids': [1, 9]}, {'prompt_token_ids': [1, 4, 7]}],
+                sampling=SamplingConfig(max_tokens=8, logprobs=1,
+                                        extra_params={'ignore_eos': True}),
+            ))
+            assert all(len(result.outputs[0].token_ids) == 8 for result in outputs)
+            assert all(math.isfinite(value) for result in outputs
+                       for value in result.outputs[0].completion_logprobs)
+            assert adapter.raw_engine._cuda_decoder.graphs
+            decoder = weakref.ref(adapter.raw_engine._cuda_decoder)
+            weight = weakref.ref(adapter.raw_engine.weights.lm_head_weight)
+            torch.cuda.synchronize()
+            allocated = torch.cuda.memory_allocated()
+        finally:
+            adapter.close()
+        assert references[-1]() is None
+        assert decoder() is None and weight() is None
+        assert torch.cuda.memory_allocated() < allocated

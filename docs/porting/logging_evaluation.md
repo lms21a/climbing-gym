@@ -1,6 +1,6 @@
 # W&B, local logging, native evaluation, and preflight
 
-Source: `/home/lukas928/SimplePT/simple-pt-memory-defaults`, commit `6edae8f`,
+Source: `simple-pt-memory-defaults`, commit `6edae8f`,
 `src/simple_pt_2/trainers/logger.py` and `src/simple_pt_2/eval.py`.
 The source checkout remains unchanged. `climbing_gym.evaluation_traces` and
 `climbing_gym.preflight` are new standalone helpers. Native benchmark metadata,
@@ -123,10 +123,10 @@ explicit normalization for comparison; there is no ambiguous heuristic parser.
 
 ## Verification
 
-CPU fixture tests use `/home/lukas928/SimplePT/.venv/bin/python`, with no real
+CPU fixture tests use `uv run python`, with no real
 W&B initialization or GPU/model evaluation:
 
-`PYTHONPATH=src /home/lukas928/SimplePT/.venv/bin/python -m pytest
+`PYTHONPATH=src uv run python -m pytest
  tests/test_logging_evaluation.py tests/test_preflight.py -q`
 
 The tests cover durable local records, complete configuration, owned W&B

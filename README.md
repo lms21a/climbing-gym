@@ -10,24 +10,28 @@ Model weights are user supplied and are never bundled.
 
 ## Start locally
 
-Python 3.12 is the tested interpreter. Install with [uv](https://docs.astral.sh/uv/):
+Linux with Python 3.12 is the tested platform. From a source checkout, install
+with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-uv sync --python 3.12 --group dev
+git clone https://github.com/lms21a/climbing-gym.git
+cd climbing-gym
+uv sync --locked --python 3.12 --group dev
 uv run climbing-gym --help
 uv run climbing-gym --version
-uv run pytest -q
+CUDA_VISIBLE_DEVICES='' uv run pytest -q
 ```
 
 Native CPU inference and CPU contract tests work without FlashAttention. CUDA
 training and fast decoding require a compatible NVIDIA driver, CUDA toolkit,
-PyTorch, Triton, and FlashAttention. The migration used Torch 2.10.0,
+PyTorch, Triton, and FlashAttention. The validated stack uses Torch 2.10.0,
 Transformers 4.57.1, Triton 3.6.0, and FlashAttention 2.8.3. For a compatible
-Linux CUDA environment, install acceleration after the base environment:
+Linux CUDA environment, install acceleration after the base environment. The
+first step installs its build prerequisites, including Ninja and psutil:
 
 ```bash
-uv sync --extra cuda --no-install-package flash-attn
-uv sync --extra cuda --no-build-isolation-package flash-attn
+uv sync --locked --extra cuda --no-install-package flash-attn
+uv sync --locked --extra cuda --no-build-isolation-package flash-attn
 ```
 
 FlashAttention may compile locally; its build requires the matching CUDA toolkit
@@ -72,11 +76,13 @@ cover exact flags, concurrency, sparse log probabilities, and training startup.
 executable directly. Top-level package import, help, and version do not import
 Torch or initialize CUDA or W&B.
 
-The environments are **GSM8K, Countdown, Knights and Knaves, Futoshiki, and
-CFOP Rubik's Cube solving**. CFOP uses the optional Python bindings from
-[CFOP Solver](https://github.com/lms21a/cfopsolver); its
-[setup guide](docs/cfop.md) covers installation, the verified phase protocol,
-and native training/evaluation examples.
+The core environments are **GSM8K, Countdown, Knights and Knaves, and Futoshiki**.
+An optional **CFOP Rubik's Cube** adapter is also included. Its solver bindings
+are currently access-restricted: [CFOP Solver](https://github.com/lms21a/cfopsolver)
+is a private repository, so CFOP requires existing repository access or a
+compatible separately supplied wheel. It is not available from the base install.
+The [CFOP guide](docs/cfop.md) explains this dependency and its verified protocol;
+the core environments need no access to that repository.
 The small GSM8K format examples are handwritten arithmetic; the full hill-climb
 recipe also includes the recorded GSM8K training subset with its
 [source and license notice](examples/futoshiki_hill_climb/data/SOURCES.md).
@@ -133,14 +139,16 @@ continuation, and integrated training routes. The
 [original GPU verification](docs/porting/release_verification.md) records native
 checkpoint compatibility and actual model traces; the
 [follow-up review](docs/porting/followup_verification.md) covers the new examples,
-critic readiness, and CFOP integration. The complete suite also passes with CUDA
-enabled on an RTX 4090: **803 passed, zero skipped**. Long training, convergence, and
+critic readiness, and CFOP integration. The [release review](docs/release_review.md)
+records the final complete suite on an RTX 4090: **879 passed, zero skipped**. Long training, convergence, and
 full-model capacity across all methods are not
 established by smoke tests. LFM3 is an additional inference-only implementation;
 it has no release accuracy/performance guarantee.
 
-Source code is MIT licensed; attribution and source revisions are recorded in
+Source code is [MIT licensed](LICENSE); attribution and source revisions are recorded in
 [porting notes](docs/porting/coordination.md). The port originates in Lukas's
 SimplePT implementations and has no runtime dependency on that checkout.
-Model weights and external datasets keep their own licenses. This repository
-contains no weights and no publishing automation.
+Model weights and external datasets keep their own licenses; bundled GSM8K
+material retains its [upstream notice](THIRD_PARTY_NOTICES.md). This repository
+contains no weights and no publishing automation. See [Contributing](CONTRIBUTING.md)
+for local development commands.
